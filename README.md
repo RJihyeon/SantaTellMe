@@ -8,7 +8,7 @@ Create a warm year-end with SantaTellMe. Express your heart with voice and words
 ```plaintext
 santatellme/
 │
-├── app/
+├── backend/
 │   ├── __init__.py
 │   ├── main.py                  # FastAPI 애플리케이션 시작점
 │   │
