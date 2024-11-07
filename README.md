@@ -15,7 +15,13 @@ santatellme/
 │   ├── api/                     # 라우터와 엔드포인트 관리
 │   │   ├── __init__.py
 │   │   ├── user_router.py       # 사용자 관련 API 라우터
-│   │   └── voice_router.py      # 음성 메시지 관련 API 라우터
+│   │   ├── voice_router.py      # 음성 메시지 관련 API 라우터
+│   │   └── auth_router.py       # 카카오 로그인 관련 라우터
+│   │
+│   ├── auth/                    # 인증 및 OAuth 관련 로직
+│   │   ├── __init__.py
+│   │   ├── kakao_oauth.py       # 카카오 OAuth2.0 인증 처리
+│   │   └── jwt_handler.py       # JWT 생성 및 검증 로직
 │   │
 │   ├── crud/                    # 데이터베이스 CRUD 로직
 │   │   ├── __init__.py
