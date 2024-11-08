@@ -8,3 +8,4 @@ class Config:
         REDIRECT_URI = env["REDIRECT_URI"]
     class JWT:
         SECRET_KEY = env["SECRET_KEY"]
+        ALGORITHM = env["ALGORITHM"]
