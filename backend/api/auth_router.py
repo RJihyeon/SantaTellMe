@@ -1,10 +1,13 @@
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import RedirectResponse
 
-from auth.jwt_handler import create_token
-from auth.kakao_oauth import request_access_token, request_user_info
-from core.Config import Config
-from core import utils
+from auth import create_token, request_access_token, request_user_info
+from core import utils, Config
+from core.dependencies import get_user_repository
+from db.entity import User
+from db.repository import UserRepository
 
 router = APIRouter()
 
@@ -20,16 +23,19 @@ async def login():
     query_param = {
         "client_id": Config.Kakako.ACCESS_KEY,
         "redirect_uri": Config.Kakako.REDIRECT_URI,
-        "response_type": "code"
+        "response_type": "code",
     }
-    return RedirectResponse(kakao_login_url + "?" + utils.build_query_param(query_param))
+    return RedirectResponse(
+        kakao_login_url + "?" + utils.build_query_param(query_param)
+    )
 
 
 @router.get("/authenticate")
 async def auhtenticate(
-        code: str | None = None,
-        error: str | None = None,
-        error_description: str | None = None
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    code: str | None = None,
+    error: str | None = None,
+    error_description: str | None = None,
 ):
     """
     (참고) 인증 흐름
@@ -41,15 +47,22 @@ async def auhtenticate(
         - access_token으로 user info 요청 보내기
     :param
         code: 카카오톡 access_token 인증코드
-    :return:
     """
     if not code:
-        raise HTTPException(status_code=400, detail={"error": error, "error_desc": error_description})
+        raise HTTPException(
+            status_code=400, detail={"error": error, "error_desc": error_description}
+        )
 
-    access_token: str = request_access_token(redirect_uri=Config.Kakako.REDIRECT_URI,
-                                             auth_code=code,
-                                             client_id=Config.Kakako.ACCESS_KEY)["access_token"]
+    access_token: str = request_access_token(
+        redirect_uri=Config.Kakako.REDIRECT_URI,
+        auth_code=code,
+        client_id=Config.Kakako.ACCESS_KEY,
+    )["access_token"]
     user_id: int = int(request_user_info(access_token)["id"])
+
+    # register new user
+    if not user_repo.find_by_kakao_id(user_id):
+        user_repo.insert(User(kakao_id=user_id, username="foo", nickname="foo"))
 
     # TODO: expire and path
     access_jwt = create_token(user_id)

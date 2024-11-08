@@ -2,7 +2,7 @@ import jwt
 from fastapi import HTTPException, Request
 from jwt.exceptions import InvalidTokenError
 
-from core.Config import Config
+from core import Config
 
 
 async def verify_jwt(request: Request) -> int:
@@ -19,7 +19,9 @@ async def verify_jwt(request: Request) -> int:
         if scheme.lower() != "bearer":
             raise Exception()
     except Exception:
-        raise HTTPException(401, detail=f"scheme should be bearer current:[{auth_header}] ")
+        raise HTTPException(
+            401, detail=f"scheme should be bearer current:[{auth_header}] "
+        )
 
     try:
         foo = jwt.decode(token, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)
