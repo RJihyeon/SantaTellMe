@@ -4,9 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = "==0.115.1"
 pyjwt = "==2.8.0"
 python-dotenv = "==1.0.1"
+httpx = "*"
+fastapi = "==0.115.1"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 
