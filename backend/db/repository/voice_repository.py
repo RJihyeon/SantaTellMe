@@ -8,7 +8,17 @@ class VoiceRepository:
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
+    def find_by_id(self, voice_id: int) -> Voice | None:
+        query = select(Voice).where(Voice.id == voice_id)
+        result = self.db_session.scalars(query).one_or_none()
+        return result
+
     def find_by_to_user_id(self, user_id: int) -> list[Voice]:
+        query = select(Voice).where(Voice.to_user == user_id)
+        result = self.db_session.scalars(query).all()
+        return result
+
+    def find_by_from_user_id(self, user_id: int) -> list[Voice]:
         query = select(Voice).where(Voice.from_user == user_id)
         result = self.db_session.scalars(query).all()
         return result
