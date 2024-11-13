@@ -2,25 +2,26 @@ import pathlib
 from typing import Annotated
 from uuid import uuid4, UUID
 
-from fastapi import APIRouter, Depends, UploadFile, HTTPException
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, UploadFile, HTTPException, Response
+from mypy_boto3_s3 import S3Client
 
 from auth import verify_jwt
 from core.dependencies import get_voice_repository, get_user_repository
 from db.entity import User
 from db.entity import Voice
 from db.repository import VoiceRepository, UserRepository
+from s3_service import get_s3_client, upload_audio, download_audio
 
 router = APIRouter(dependencies=[Depends(verify_jwt)])
 
 
 @router.post("/voice")
 async def upload_voice(
-    to_user: int,
-    audio_file: UploadFile,
-    from_user_kakao_id: Annotated[int, Depends(verify_jwt)],
-    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        to_user: int,
+        audio_file: UploadFile,
+        from_user_kakao_id: Annotated[int, Depends(verify_jwt)],
+        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ):
     # save voice data to db
     from_user: User = user_repo.find_by_kakao_id(from_user_kakao_id)
@@ -29,11 +30,9 @@ async def upload_voice(
     voice = Voice(from_user=from_user.id, to_user=to_user, s3_id=s3_id.bytes)
     voice_repo.insert(voice)
 
-    # (tmp) save audio file in local
-    save_path: pathlib.Path = pathlib.Path.cwd().absolute() / "audio" / f"{s3_id}.mp3"
-
-    with open(save_path, "wb") as f:
-        f.write(await audio_file.read())
+    # upload to s3
+    s3_client: S3Client = get_s3_client()
+    upload_audio(s3_client, f"{s3_id}.mp3", audio_file.read())
 
     # (tmp)
     return "ok"
@@ -41,10 +40,10 @@ async def upload_voice(
 
 @router.get("/voice/{voice_id}/meta")
 async def get_voice_metadata(
-    voice_id: int,
-    user_kakao_id: Annotated[int, Depends(verify_jwt)],
-    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        voice_id: int,
+        user_kakao_id: Annotated[int, Depends(verify_jwt)],
+        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ):
     # find voice
     voice = voice_repo.find_by_id(voice_id)
@@ -71,10 +70,10 @@ async def get_voice_metadata(
 
 @router.get("/voice/{voice_id}/audio")
 async def get_voice_audio(
-    voice_id: int,
-    user_kakao_id: Annotated[int, Depends(verify_jwt)],
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+        voice_id: int,
+        user_kakao_id: Annotated[int, Depends(verify_jwt)],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ):
     # find voice
     voice = voice_repo.find_by_id(voice_id)
@@ -91,15 +90,18 @@ async def get_voice_audio(
     s3_id = str(UUID(bytes=voice.s3_id))
     file_path = pathlib.Path.cwd().absolute() / "audio" / f"{s3_id}.mp3"
 
-    return FileResponse(path=str(file_path))
+    s3_client: S3Client = get_s3_client()
+    audio_binary: bytes = download_audio(s3_client, f"{s3_id}.mp3")
+
+    return Response(content=audio_binary, media_type="audio/mpeg")
 
 
 @router.get("/voice/sent")
 async def get_voice_id_list(
-    from_user: int,
-    user_kakao_id: Annotated[int, Depends(verify_jwt)],
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+        from_user: int,
+        user_kakao_id: Annotated[int, Depends(verify_jwt)],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ) -> list[int]:
     voice_list: list[Voice] = voice_repo.find_by_to_user_id(from_user)
     if len(voice_list) == 0:
@@ -115,10 +117,10 @@ async def get_voice_id_list(
 
 @router.get("/voice/received")
 async def get_voice_id_list(
-    to_user: int,
-    user_kakao_id: Annotated[int, Depends(verify_jwt)],
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+        to_user: int,
+        user_kakao_id: Annotated[int, Depends(verify_jwt)],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ) -> list[int]:
     voice_list: list[Voice] = voice_repo.find_by_from_user_id(to_user)
     if len(voice_list) == 0:
