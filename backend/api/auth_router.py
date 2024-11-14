@@ -61,9 +61,13 @@ async def auhtenticate(
     user_id: int = int(request_user_info(access_token)["id"])
 
     # register new user
-    if not user_repo.find_by_kakao_id(user_id):
-        user_repo.insert(User(kakao_id=user_id, username="foo", nickname="foo"))
+    user: User = User(kakao_id=user_id, username="foo", nickname="foo")
+    if (user := user_repo.find_by_kakao_id(user_id)) is None:
+        user_repo.insert(user)
+
+    if user.id is None:
+        raise Exception("user id must not be None")
 
     # TODO: expire and path
-    access_jwt = JwtAuth.create_token(user_id)
+    access_jwt = JwtAuth.create_token(user.id)
     return JwtResponse(access_token=access_jwt)

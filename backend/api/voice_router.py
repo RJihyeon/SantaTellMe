@@ -19,17 +19,17 @@ router = APIRouter(dependencies=[Depends(JwtAuth())])
 
 @router.post("/voice")
 async def upload_voice(
-        to_user: int,
+        to_user_id: int,
         audio_file: UploadFile,
-        from_user_kakao_id: Annotated[int, Depends(JwtAuth())],
+        from_user_id: Annotated[int, Depends(JwtAuth())],
         voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
         user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> VoiceMetaData:
     # save voice data to db
-    from_user: User = user_repo.find_by_kakao_id(from_user_kakao_id)
+    from_user: User = user_repo.find_by_user_id(from_user_id)
     s3_id = uuid4()
 
-    voice = Voice(from_user=from_user.id, to_user=to_user, s3_id=s3_id.bytes)
+    voice = Voice(from_user=from_user.id, to_user=to_user_id, s3_id=s3_id.bytes)
     voice_repo.insert(voice)
 
     # upload to s3
@@ -51,9 +51,8 @@ async def upload_voice(
 @router.get("/voice/{voice_id}/meta")
 async def get_voice_metadata(
         voice_id: int,
-        user_kakao_id: Annotated[int, Depends(JwtAuth())],
+        user_id: Annotated[int, Depends(JwtAuth())],
         voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
-        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> VoiceMetaData:
     # find voice
     voice = voice_repo.find_by_id(voice_id)
@@ -61,11 +60,8 @@ async def get_voice_metadata(
         raise HTTPException(status_code=500, detail="voice must not be None")
 
     # authorize: 보낸 쪽(from_user), 받는 쪽(to_user)모두 권한 있임
-    user: User = user_repo.find_by_kakao_id(user_kakao_id)
-    if user is None:
-        raise HTTPException(status_code=500, detail="user must not be None")
-    assert user is not None
-    if user.id not in [voice.to_user, voice.from_user]:
+
+    if user_id not in [voice.to_user, voice.from_user]:
         raise HTTPException(status_code=401, detail="unauthorized")
 
     return VoiceMetaData(
@@ -83,8 +79,7 @@ async def get_voice_metadata(
 @router.get("/voice/{voice_id}/audio")
 async def get_voice_audio(
         voice_id: int,
-        user_kakao_id: Annotated[int, Depends(JwtAuth())],
-        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        user_id: Annotated[int, Depends(JwtAuth())],
         voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ):
     # find voice
@@ -94,9 +89,7 @@ async def get_voice_audio(
 
     # authorize
     # authorize: 보낸 쪽(from_user), 받는 쪽(to_user)모두 권한 있임
-    user: User = user_repo.find_by_kakao_id(user_kakao_id)
-    assert user is not None
-    if user.id not in [voice.to_user, voice.from_user]:
+    if user_id not in [voice.to_user, voice.from_user]:
         raise HTTPException(status_code=401, detail="unauthorized")
 
     s3_id = str(UUID(bytes=voice.s3_id))
@@ -107,19 +100,13 @@ async def get_voice_audio(
     return Response(content=audio_binary, media_type="audio/mpeg")
 
 
-@router.get("/user/{user_id}/voices")
+@router.get("/user/voices")
 async def get_voice_id_list(
-        user_kakao_id: Annotated[int, Depends(JwtAuth())],
-        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        user_id: Annotated[int, Depends(JwtAuth())],
         voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ) -> VoiceIds:
-    user: User = user_repo.find_by_kakao_id(user_kakao_id)
-
-    if user is None:
-        raise Exception("user should not be None")
-
-    received_voices: list[Voice] = voice_repo.find_by_to_user_id(user.id)
-    sent_voices: list[Voice] = voice_repo.find_by_from_user_id(user.id)
+    received_voices: list[Voice] = voice_repo.find_by_to_user_id(user_id)
+    sent_voices: list[Voice] = voice_repo.find_by_from_user_id(user_id)
 
     return VoiceIds(
         received_voice_ids=map(lambda v: v.id, received_voices),

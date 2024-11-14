@@ -19,4 +19,4 @@ class VoiceMetaData(BaseModel):
     created_at: datetime
 
 class JwtResponse(BaseModel):
-    access_token: UUID
+    access_token: str

@@ -14,6 +14,7 @@ class UserRepository:
         assert not user.id
         self.db_session.add(user)
         self.db_session.commit()
+        self.db_session.refresh(user)
         return user.id
 
     def find_by_kakao_id(self, kakao_id: int) -> Optional[User]:
@@ -22,6 +23,15 @@ class UserRepository:
             kakao_id: kakao user id
         """
         query = select(User).where(User.kakao_id == kakao_id)
+        result = self.db_session.scalars(query).one_or_none()
+        return result
+
+    def find_by_user_id(self, user_id: int) -> Optional[User]:
+        """ "
+        :param
+            kakao_id: kakao user id
+        """
+        query = select(User).where(User.id == user_id)
         result = self.db_session.scalars(query).one_or_none()
         return result
 
