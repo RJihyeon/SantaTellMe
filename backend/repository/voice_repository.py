@@ -1,7 +1,7 @@
 from sqlalchemy import func, update, select, delete
 from sqlalchemy.orm.session import Session
 
-from db.entity.entity import Voice
+from models import Voice
 
 
 class VoiceRepository:

@@ -4,7 +4,8 @@ from fastapi import Depends
 from sqlalchemy.orm.session import Session
 
 from db import get_session
-from db.repository import UserRepository, VoiceRepository
+from .user_repository import UserRepository
+from .voice_repository import VoiceRepository
 
 
 def get_user_repository(db_session: Annotated[Session, Depends(get_session)]):

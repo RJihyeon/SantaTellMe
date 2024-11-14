@@ -8,6 +8,7 @@ class Config:
     env file에서 변수들 읽음
     프로젝트 코드내에서는 이 class를 통해서만 변수 접근하기
     """
+
     class Kakako:
         ACCESS_KEY = env["KAKAO_CLIENT_KEY"]
         REDIRECT_URI = env["REDIRECT_URI"]

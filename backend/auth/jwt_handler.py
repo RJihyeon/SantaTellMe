@@ -24,7 +24,9 @@ class JwtAuth(HTTPBearer):
             )
 
         try:
-            request.state.token_info = jwt.decode(token, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)['user_id']
+            request.state.token_info = jwt.decode(
+                token, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM
+            )["user_id"]
         except InvalidTokenError as e:
             raise HTTPException(401, detail=str(e))
 
@@ -32,4 +34,6 @@ class JwtAuth(HTTPBearer):
 
     @staticmethod
     def create_token(user_id: int) -> str:
-        return jwt.encode({"user_id": user_id}, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)
+        return jwt.encode(
+            {"user_id": user_id}, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM
+        )

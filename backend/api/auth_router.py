@@ -5,9 +5,8 @@ from fastapi.responses import RedirectResponse
 
 from auth import JwtAuth, request_access_token, request_user_info
 from core import utils, Config
-from core.dependencies import get_user_repository
-from db.entity import User
-from db.repository import UserRepository
+from models import User
+from repository import UserRepository, get_user_repository
 
 router = APIRouter()
 
