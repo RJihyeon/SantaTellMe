@@ -18,6 +18,9 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v4
 
+      - name: Get directory details
+        run: "ls -la"
+
       - name: Change directory
         run: "cd ./frontend"
 
