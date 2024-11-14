@@ -5,14 +5,15 @@ from fastapi.responses import RedirectResponse
 
 from auth import JwtAuth, request_access_token, request_user_info
 from core import utils, Config
-from models import User
+from entity import User
+from models import JwtResponse
 from repository import UserRepository, get_user_repository
 
 router = APIRouter()
 
 
 @router.get("/login")
-async def login():
+async def login() -> RedirectResponse:
     """
     login main entry point
     책임
@@ -31,11 +32,11 @@ async def login():
 
 @router.get("/authenticate")
 async def auhtenticate(
-    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-    code: str | None = None,
-    error: str | None = None,
-    error_description: str | None = None,
-):
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+        code: str | None = None,
+        error: str | None = None,
+        error_description: str | None = None,
+) -> JwtResponse:
     """
     (참고) 인증 흐름
     1. /login 에서 kauth.kakako.com/oauth/authroize로 redirect
@@ -65,4 +66,4 @@ async def auhtenticate(
 
     # TODO: expire and path
     access_jwt = JwtAuth.create_token(user_id)
-    return {"access_jwt": access_jwt}
+    return JwtResponse(access_token=access_jwt)

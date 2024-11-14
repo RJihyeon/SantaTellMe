@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BINARY, Boolean, TIMESTAMP, ForeignKey
+from sqlalchemy import BINARY, Boolean, TIMESTAMP, ForeignKey, text
 from sqlalchemy.orm import mapped_column, Mapped
 
 from .base import Base
@@ -15,4 +15,4 @@ class Voice(Base):
     annonymous: Mapped[bool] = mapped_column(Boolean, default=False)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
