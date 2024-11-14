@@ -32,10 +32,10 @@ async def login() -> RedirectResponse:
 
 @router.get("/authenticate")
 async def auhtenticate(
-        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
-        code: str | None = None,
-        error: str | None = None,
-        error_description: str | None = None,
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    code: str | None = None,
+    error: str | None = None,
+    error_description: str | None = None,
 ) -> JwtResponse:
     """
     (참고) 인증 흐름

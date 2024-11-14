@@ -15,4 +15,6 @@ class Voice(Base):
     annonymous: Mapped[bool] = mapped_column(Boolean, default=False)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
+    created_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP, server_default=text("CURRENT_TIMESTAMP")
+    )

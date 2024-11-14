@@ -19,11 +19,11 @@ router = APIRouter(dependencies=[Depends(JwtAuth())])
 
 @router.post("/voice")
 async def upload_voice(
-        to_user_id: int,
-        audio_file: UploadFile,
-        from_user_id: Annotated[int, Depends(JwtAuth())],
-        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
-        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+    to_user_id: int,
+    audio_file: UploadFile,
+    from_user_id: Annotated[int, Depends(JwtAuth())],
+    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+    user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> VoiceMetaData:
     # save voice data to db
     from_user: User = user_repo.find_by_user_id(from_user_id)
@@ -50,9 +50,9 @@ async def upload_voice(
 
 @router.get("/voice/{voice_id}/meta")
 async def get_voice_metadata(
-        voice_id: int,
-        user_id: Annotated[int, Depends(JwtAuth())],
-        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+    voice_id: int,
+    user_id: Annotated[int, Depends(JwtAuth())],
+    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ) -> VoiceMetaData:
     # find voice
     voice = voice_repo.find_by_id(voice_id)
@@ -78,9 +78,9 @@ async def get_voice_metadata(
 
 @router.get("/voice/{voice_id}/audio")
 async def get_voice_audio(
-        voice_id: int,
-        user_id: Annotated[int, Depends(JwtAuth())],
-        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+    voice_id: int,
+    user_id: Annotated[int, Depends(JwtAuth())],
+    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ):
     # find voice
     voice = voice_repo.find_by_id(voice_id)
@@ -102,8 +102,8 @@ async def get_voice_audio(
 
 @router.get("/user/voices")
 async def get_voice_id_list(
-        user_id: Annotated[int, Depends(JwtAuth())],
-        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+    user_id: Annotated[int, Depends(JwtAuth())],
+    voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
 ) -> VoiceIds:
     received_voices: list[Voice] = voice_repo.find_by_to_user_id(user_id)
     sent_voices: list[Voice] = voice_repo.find_by_from_user_id(user_id)

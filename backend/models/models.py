@@ -18,5 +18,6 @@ class VoiceMetaData(BaseModel):
     is_correct: bool = False
     created_at: datetime
 
+
 class JwtResponse(BaseModel):
     access_token: str
