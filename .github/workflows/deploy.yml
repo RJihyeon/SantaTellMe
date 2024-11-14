@@ -31,7 +31,7 @@ jobs:
 
       - name: Build step
         run: |
-          "cd frontend"
+          "cd ./frontend"
           "deno task build"
 
       - name: Upload to Deno Deploy
