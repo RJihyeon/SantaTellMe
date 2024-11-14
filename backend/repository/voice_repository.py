@@ -1,7 +1,7 @@
 from sqlalchemy import func, update, select, delete
 from sqlalchemy.orm.session import Session
 
-from models import Voice
+from entity import Voice
 
 
 class VoiceRepository:
@@ -34,6 +34,7 @@ class VoiceRepository:
         assert not voice.id
         self.db_session.add(voice)
         self.db_session.commit()
+        self.db_session.refresh(voice)
         return voice.id
 
     def update(self, voice: Voice):
