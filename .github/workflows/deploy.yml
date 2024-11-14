@@ -29,12 +29,8 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Deploy Deno App
-        run: |
-          deno run --config ./frontend/deno.json --allow-net --allow-read ./frontend/main.ts
-
       - name: Build step
-        run: "deno task build"
+        run: "deno task --cwd frontend build"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
