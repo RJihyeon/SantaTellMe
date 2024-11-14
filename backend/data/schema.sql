@@ -15,5 +15,5 @@ create table voice
     annonymous BOOLEAN DEFAULT FALSE,
     is_read    BOOLEAN DEFAULT FALSE,
     is_correct BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
