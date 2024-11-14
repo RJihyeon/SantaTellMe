@@ -1,14 +1,21 @@
-# 각 서버의 기능
+##가상환경 설정
 
-1. user_login.py
-유저의 로그인 관련 요청을 처리한다
+```shell
+pip install pipenv
+pipenv --python 3.10
+```
 
-2. voice_upload.py
-유저가 생성한 목소리를 보낸다
+###가상환경 실행/종료
 
-3. voice_receive.py
-유저의 메일함 확인한다.
+```shell
+pipenv shell
+exit
+```
 
-4. modulate_voice.py
-유저의 음성을 변환해 준다.
--나중에...
+###가상환경에 pipenv 패키지 다운
+
+```shell
+pipenv install
+pipenv install fastapi
+```
+======

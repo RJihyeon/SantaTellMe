@@ -1,1 +1,10 @@
+# env file
+/backend/.env
+.env
+
+# editor and ide
+.idea
+__pycache__/
+=======
+
 
