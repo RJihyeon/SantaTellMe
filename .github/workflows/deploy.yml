@@ -29,10 +29,12 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Build step
+      - name: Deploy Deno App
         run: |
-          "cd ./frontend"
-          "deno task build"
+          deno run --config ./frontend/deno.json --allow-net --allow-read ./frontend/main.ts
+
+      - name: Build step
+        run: "deno task build"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
