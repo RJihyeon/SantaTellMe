@@ -1,4 +1,4 @@
-name: Deploy
+name: Deploy frontend
 on:
   push:
     branches: main
@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
+
+      - name: Change to frontend directory
+        run: cd frontend
 
       - name: Install Deno
         uses: denoland/setup-deno@v2
