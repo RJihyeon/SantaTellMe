@@ -18,6 +18,9 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v4
 
+      - name: Change directory
+        run: cd frontend
+
       - name: Install Deno
         uses: denoland/setup-deno@v2
         with:
