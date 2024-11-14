@@ -1,7 +1,7 @@
-import dotenv
+from dotenv import load_dotenv
+import os
 
-env = dotenv.dotenv_values("../.env")
-
+load_dotenv()
 
 class Config:
     """
@@ -10,17 +10,17 @@ class Config:
     """
 
     class Kakako:
-        ACCESS_KEY = env["KAKAO_CLIENT_KEY"]
-        REDIRECT_URI = env["REDIRECT_URI"]
+        ACCESS_KEY = os.getenv("KAKAO_CLIENT_KEY")
+        REDIRECT_URI = os.getenv("REDIRECT_URI")
 
     class JWT:
-        SECRET_KEY = env["SECRET_KEY"]
-        ALGORITHM = env["ALGORITHM"]
+        SECRET_KEY = os.getenv("SECRET_KEY")
+        ALGORITHM = os.getenv("ALGORITHM")
 
     class DB:
-        CONN_URL = env["CONNECTION_URL"]
+        CONN_URL = os.getenv("CONNECTION_URL")
 
     class AWS:
-        ACCESS_KEY_ID = env["AWS_ACCESS_KEY_ID"]
-        SECREY_ACCESS_KEY = env["AWS_SECRET_ACCESS_KEY"]
-        BUCEKT_NAME = env["BUCKET_NAME"]
+        ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+        SECREY_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+        BUCEKT_NAME = os.getenv("BUCKET_NAME")
