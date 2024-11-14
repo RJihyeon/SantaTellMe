@@ -1,35 +1,35 @@
 import jwt
 from fastapi import HTTPException, Request
+from fastapi.security import HTTPBearer
 from jwt.exceptions import InvalidTokenError
 
 from core import Config
 
 
-async def verify_jwt(request: Request) -> int:
-    """
-    간단한 jwt 인증구현
-    path function에 의존성 주입되어서만 사용됨
-    :return: kakao user id
-    """
-    auth_header: str = request.headers.get("Authorization")
-    if not auth_header:
-        raise HTTPException(401, detail=f"require Authorization header")
-    try:
-        scheme, token = auth_header.split(" ")
-        if scheme.lower() != "bearer":
-            raise Exception()
-    except Exception:
-        raise HTTPException(
-            401, detail=f"scheme should be bearer current:[{auth_header}] "
-        )
+class JwtAuth(HTTPBearer):
+    def __init__(self, auto_error: bool = True):
+        super(JwtAuth, self).__init__(auto_error=auto_error)
 
-    try:
-        foo = jwt.decode(token, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)
-    except InvalidTokenError as e:
-        raise HTTPException(401, detail=str(e))
+    async def __call__(self, request: Request) -> int:
+        auth_header: str = request.headers.get("Authorization")
+        if not auth_header:
+            raise HTTPException(401, detail=f"require Authorization header")
+        try:
+            scheme, token = auth_header.split(" ")
+            if scheme.lower() != "bearer":
+                raise Exception()
+        except Exception:
+            raise HTTPException(
+                401, detail=f"scheme should be bearer current:[{auth_header}] "
+            )
 
-    return int(foo["user_id"])
+        try:
+            request.state.token_info = jwt.decode(token, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)['user_id']
+        except InvalidTokenError as e:
+            raise HTTPException(401, detail=str(e))
 
+        return int(request.state.token_info)
 
-def create_token(user_id: int) -> str:
-    return jwt.encode({"user_id": user_id}, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)
+    @staticmethod
+    def create_token(user_id: int) -> str:
+        return jwt.encode({"user_id": user_id}, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)

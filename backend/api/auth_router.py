@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import RedirectResponse
 
-from auth import create_token, request_access_token, request_user_info
+from auth import JwtAuth, request_access_token, request_user_info
 from core import utils, Config
 from core.dependencies import get_user_repository
 from db.entity import User
@@ -65,5 +65,5 @@ async def auhtenticate(
         user_repo.insert(User(kakao_id=user_id, username="foo", nickname="foo"))
 
     # TODO: expire and path
-    access_jwt = create_token(user_id)
+    access_jwt = JwtAuth.create_token(user_id)
     return {"access_jwt": access_jwt}
