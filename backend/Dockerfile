@@ -26,8 +26,8 @@ RUN pipenv install --deploy --ignore-pipfile
 # Copy the rest of the application code into the container
 COPY . /app
 
-# Expose port 80 for the FastAPI app
-EXPOSE 80
+# Expose port 8080 for the FastAPI app
+EXPOSE 8080
 
 # Run the FastAPI application using uvicorn
 CMD ["pipenv", "run", "python", "main.py"]
