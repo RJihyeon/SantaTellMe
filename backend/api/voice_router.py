@@ -26,7 +26,10 @@ async def upload_voice(
     user_repo: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> VoiceMetaData:
     # save voice data to db
-    from_user: User = user_repo.find_by_user_id(from_user_id)
+    from_user: User | None = user_repo.find_by_user_id(from_user_id)
+    if from_user is None:
+        raise HTTPException(status_code=404, detail="can't find user")
+
     s3_id = uuid4()
 
     voice = Voice(from_user=from_user.id, to_user=to_user_id, s3_id=s3_id.bytes)
@@ -57,7 +60,7 @@ async def get_voice_metadata(
     # find voice
     voice = voice_repo.find_by_id(voice_id)
     if voice is None:
-        raise HTTPException(status_code=500, detail="voice must not be None")
+        raise HTTPException(status_code=404, detail="metadata not found")
 
     # authorize: 보낸 쪽(from_user), 받는 쪽(to_user)모두 권한 있임
 
@@ -81,11 +84,11 @@ async def get_voice_audio(
     voice_id: int,
     user_id: Annotated[int, Depends(JwtAuth())],
     voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
-):
+) -> Response:
     # find voice
     voice = voice_repo.find_by_id(voice_id)
     if voice is None:
-        raise HTTPException(status_code=500, detail="voice required")
+        raise HTTPException(status_code=404, detail="metadata not found")
 
     # authorize
     # authorize: 보낸 쪽(from_user), 받는 쪽(to_user)모두 권한 있임
@@ -109,6 +112,6 @@ async def get_voice_id_list(
     sent_voices: list[Voice] = voice_repo.find_by_from_user_id(user_id)
 
     return VoiceIds(
-        received_voice_ids=map(lambda v: v.id, received_voices),
-        sent_voice_ids=map(lambda v: v.id, sent_voices),
+        received_voice_ids=list(map(lambda v: v.id, received_voices)),
+        sent_voice_ids=list(map(lambda v: v.id, sent_voices)),
     )
