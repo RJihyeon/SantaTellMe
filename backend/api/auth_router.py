@@ -58,11 +58,13 @@ async def auhtenticate(
         auth_code=code,
         client_id=Config.Kakako.ACCESS_KEY,
     )["access_token"]
-    user_id: int = int(request_user_info(access_token)["id"])
+    user_kakao_id: int = int(request_user_info(access_token)["id"])
 
     # register new user
-    user: User = User(kakao_id=user_id, username="foo", nickname="foo")
-    if (user := user_repo.find_by_kakao_id(user_id)) is None:
+    # user: User = User(kakao_id=user_id, username="foo", nickname="foo")
+    user: User | None = user_repo.find_by_kakao_id(user_kakao_id)
+    if user is None:
+        user = User(kakao_id=user_kakao_id, username="foo", nickname="foo")
         user_repo.insert(user)
 
     if user.id is None:
