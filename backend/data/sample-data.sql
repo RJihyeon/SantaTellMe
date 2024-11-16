@@ -1,5 +1,5 @@
 INSERT INTO users (kakao_id, username, nickname)
-VALUES (3750899517, 'jun_hyoung_park', 'jun_hyoung'),
+VALUES (3794225623, 'jun_hyoung_park', 'jun_hyoung'),
        (3750899522, 'user1', 'nick1'),
        (3750899523, 'user2', 'nick2'),
        (3750899524, 'user3', 'nick3'),
