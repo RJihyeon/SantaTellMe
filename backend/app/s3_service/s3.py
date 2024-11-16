@@ -1,7 +1,7 @@
 import boto3
 from mypy_boto3_s3 import S3Client
 
-from core import Config
+from app.core import Config
 
 
 def get_s3_client() -> S3Client:

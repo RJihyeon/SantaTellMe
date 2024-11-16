@@ -3,6 +3,7 @@ import os
 
 load_dotenv()
 
+
 class Config:
     """
     env file에서 변수들 읽음
