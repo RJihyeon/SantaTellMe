@@ -67,6 +67,7 @@ async def get_voice_metadata(
     if user_id not in [voice.to_user, voice.from_user]:
         raise HTTPException(status_code=401, detail="unauthorized")
 
+    print(f"voice_id: {voice_id} user_id: {user_id}")
     return VoiceMetaData(
         id=voice.id,
         s3_id=UUID(bytes=voice.s3_id),

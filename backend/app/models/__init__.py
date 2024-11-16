@@ -1,3 +1,3 @@
-from .models import VoiceIds, VoiceMetaData, JwtResponse
+from .models import VoiceIds, VoiceMetaData, JwtResponse, UserInvitationUrl
 
-__all__ = ["VoiceIds", "VoiceMetaData", "JwtResponse"]
+__all__ = ["VoiceIds", "VoiceMetaData", "JwtResponse", "UserInvitationUrl"]

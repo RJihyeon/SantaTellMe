@@ -8,7 +8,6 @@ import httpx
 user1_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.J8Qj4p5xrAMj0GKjddGky-oeAOlWxjT8KOCisXzSOdU"
 user4_jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0fQ.wxnKr5vamZ-Ez0vkVpSWL-bbi1T54glTTrCaJTZeRyQ"
 
-
 def get_voice_id_list(access_token: str) -> httpx.Response:
     resp: httpx.Response = httpx.get(
         url="http://0.0.0.0:8000/user/voices",
@@ -41,12 +40,21 @@ def download_binary(access_token: str, voice_id: int) -> httpx.Response:
     )
     return resp
 
+def get_invitation_url(access_token: str) -> httpx.Response:
+    resp: httpx.Response = httpx.get(
+        url="http://0.0.0.0:8000/user/invitation",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    return resp
 
-def test_get_voice_id_list():
-    resp: httpx.Response = get_voice_id_list(user1_jwt)
-    assert resp.status_code == 200
-    assert resp.json() == {"received_voice_ids": [4, 7, 9], "sent_voice_ids": [1, 2, 3]}
+def get_user_id_by_invitation_url(access_token: str, invitation_token: str) -> httpx.Response:
+    resp: httpx.Response = httpx.get(
+        url=f"http://0.0.0.0:8000/invitation/user?token={invitation_token}",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    return resp
 
+    
 
 def test_get_voice_metadata():
     resp: httpx.Response = get_voice_metadata(user1_jwt, 1)
@@ -58,6 +66,12 @@ def test_get_voice_metadata():
     resp: httpx.Response = get_voice_metadata(user1_jwt, 100)
     assert resp.status_code == 404
 
+def test_get_voice_id_list():
+    resp: httpx.Response = get_voice_id_list(user1_jwt)
+    assert resp.status_code == 200
+    assert resp.json() == {"received_voice_ids": [4, 7, 9], "sent_voice_ids": [1, 2, 3]}
+
+
 
 def test_upload_and_download_sinario():
     binary: bytes = b"efsadfsdafsadfsadfsadf"
@@ -68,3 +82,14 @@ def test_upload_and_download_sinario():
     resp: httpx.Response = download_binary(user4_jwt, upload_resp_body["id"])
     assert resp.status_code == 200
     assert resp.content == binary
+
+def test_issue_invitation_and_get_user_id_by_it_sinario():
+    resp: httpx.Response =  get_invitation_url(user4_jwt)
+    assert resp.status_code == 200
+    invitation_token = resp.json()["url"].split("?")[1].removeprefix("token=")
+    
+    resp:httpx.Response =  get_user_id_by_invitation_url(user1_jwt, invitation_token)
+    assert resp.status_code == 200
+    assert int(resp.content) == 4
+
+    
