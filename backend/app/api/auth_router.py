@@ -3,11 +3,11 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import RedirectResponse
 
-from app.auth import JwtAuth, request_access_token, request_user_info
-from app.core import utils, Config
-from app.entity import User
-from app.models import JwtResponse
-from app.repository import UserRepository, get_user_repository
+from auth import JwtAuth, request_access_token, request_user_info
+from core import utils, Config
+from entity import User
+from models import JwtResponse
+from repository import UserRepository, get_user_repository
 
 router = APIRouter()
 

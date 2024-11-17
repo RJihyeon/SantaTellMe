@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import select, delete
 from sqlalchemy.orm.session import Session
 
-from app.entity import User
+from entity import User
 
 
 class UserRepository:

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from app.core import Config
+from core import Config
 
 """
 sqlalchemy가 비동기, connection-pool 같은 것들을 지원하는 것 같은 데 

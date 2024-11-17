@@ -4,11 +4,11 @@ import jwt
 from fastapi import APIRouter, Depends, HTTPException
 from jwt.exceptions import InvalidTokenError
 
-from app.auth import JwtAuth
-from app.models import UserInvitationUrl
-from app.core import Config
-from app.repository import get_user_repository, UserRepository
-from app.entity import User
+from auth import JwtAuth
+from models import UserInvitationUrl
+from core import Config
+from repository import get_user_repository, UserRepository
+from entity import User
 
 router = APIRouter(dependencies=[Depends(JwtAuth())])
 

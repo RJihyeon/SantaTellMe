@@ -3,16 +3,16 @@ from uuid import uuid4, UUID
 
 from fastapi import APIRouter, Depends, UploadFile, HTTPException, Response
 
-from app.auth import JwtAuth
-from app.entity import User, Voice
-from app.models import VoiceMetaData, VoiceIds
-from app.repository import (
+from auth import JwtAuth
+from entity import User, Voice
+from models import VoiceMetaData, VoiceIds
+from repository import (
     get_voice_repository,
     get_user_repository,
     VoiceRepository,
     UserRepository,
 )
-from app.s3_service import upload_audio, download_audio
+from s3_service import upload_audio, download_audio
 
 router = APIRouter(dependencies=[Depends(JwtAuth())])
 

@@ -3,7 +3,7 @@ from fastapi import HTTPException, Request
 from fastapi.security import HTTPBearer
 from jwt.exceptions import InvalidTokenError
 
-from app.core import Config
+from core import Config
 
 
 class JwtAuth(HTTPBearer):
