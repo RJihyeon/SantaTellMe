@@ -61,6 +61,7 @@ def test_get_voice_metadata():
     resp: httpx.Response = get_voice_metadata(user1_jwt, 100)
     assert resp.status_code == 404
 
+
 def test_upload_and_download_sinario():
     binary: bytes = b"efsadfsdafsadfsadfsadf"
     resp: httpx.Response = upload_binary(user4_jwt, binary, 1)

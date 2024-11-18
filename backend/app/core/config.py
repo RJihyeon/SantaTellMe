@@ -25,5 +25,6 @@ class Config:
         ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         SECREY_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
         BUCEKT_NAME = os.getenv("BUCKET_NAME")
+
     class ENV:
-        SERVER_HOST = os.getenv("ENV_SERVER_HOST") 
+        SERVER_HOST = os.getenv("ENV_SERVER_HOST")
