@@ -1,12 +1,12 @@
 ## 개발환경 세팅 
 - docker
 - docker compose
-- mysqlclient dependencies [mysqlclient](https://github.com/PyMySQL/mysqlclient)
-- Pipenv
+- [mysqlclient](https://github.com/PyMySQL/mysqlclient) dependencies
+- pipenv
 
 ## 실행방법 
 ```
-# cd .SantatellMe
+# cd SantatellMe
 curl -o .env https://santatellme-project.s3.ap-northeast-2.amazonaws.com/env_file
 docker-compose up -d mysql 
 pipenv run python ./backend/app/main.py
@@ -24,10 +24,10 @@ just test
 justfile이 깔려 있지 않은 경우
 
 ```
-# cd .SantatellMe
+# cd SantatellMe
 docker-compose up -d mysql
 cd ./backend
-pytest 
+pipenv run pytest 
 cd ..
 docker-compose down -v
 ```
