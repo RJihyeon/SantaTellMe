@@ -27,4 +27,4 @@ class Config:
         BUCEKT_NAME = os.getenv("BUCKET_NAME")
 
     class ENV:
-        SERVER_HOST = os.getenv("ENV_SERVER_HOST")
+        SERVER_HOST = os.getenv("SERVER_HOST")
