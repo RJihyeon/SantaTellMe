@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Response, Request
 from fastapi.responses import RedirectResponse
 
 from auth import JwtAuth, request_access_token, request_user_info
@@ -32,6 +32,7 @@ async def login() -> RedirectResponse:
 
 @router.get("/authenticate")
 async def auhtenticate(
+    response : Response,
     user_repo: Annotated[UserRepository, Depends(get_user_repository)],
     code: str | None = None,
     error: str | None = None,
@@ -71,5 +72,35 @@ async def auhtenticate(
         raise Exception("user id must not be None")
 
     # TODO: expire and path
-    access_jwt = JwtAuth.create_token(user.id)
-    return JwtResponse(access_token=access_jwt)
+    jwt_token = JwtAuth.create_token(user.id)
+
+    # 5. JWT를 HttpOnly 쿠키에 저장
+    response.set_cookie(
+        key="access_token",          # 쿠키 이름
+        value=jwt_token,            # JWT 토큰 값
+        httponly=True,              # HttpOnly 속성 (JS에서 접근 불가)
+        secure=False,               # HTTPS 환경에서 True로 설정
+        samesite="Lax",             # CSRF 방지
+        max_age=3600,               # 쿠키 만료 시간 (초)
+    )
+
+    # 6. 프론트엔드 대시보드로 리디렉션
+    return RedirectResponse(url="http://localhost:8001")
+
+
+
+@router.get("/protected-data")
+async def protected_data(request: Request):
+    # 쿠키에서 JWT 가져오기
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # JWT 검증
+    try:
+        payload = JwtAuth.verify_token(token)
+        user_id = payload.get("user_id")
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+
+    return {"message": f"Hello, User {user_id}"}
