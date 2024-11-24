@@ -1,9 +1,9 @@
-name: Deploy frontend
+name: Deploy
 on:
   push:
-    branches: main
+    branches: dev
   pull_request:
-    branches: main
+    branches: dev
 
 jobs:
   deploy:
@@ -18,8 +18,11 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v4
 
-      - name: Change to frontend directory
-        run: cd frontend
+      # - name: Get directory details
+      #   run: "ls -la"
+
+      # - name: Change directory
+      #   run: "cd ./frontend"
 
       - name: Install Deno
         uses: denoland/setup-deno@v2
@@ -27,13 +30,13 @@ jobs:
           deno-version: v2.x
 
       - name: Build step
-        run: "deno task build"
+        run: "deno task --cwd frontend build"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "ybigta-santa-tell-me"
+          project: "santatellme"
           entrypoint: "main.ts"
-          root: "."
+          root: "./frontend"
           
           
