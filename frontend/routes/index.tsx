@@ -29,7 +29,14 @@ export default function Home() {
         </div>
       </div>
       <div className={"my-[200px] flex flex-row gap-2"}>
-        <Button>시작하기!</Button>
+        <Button
+          onClick={() => {
+            globalThis.location.href = "/login";
+            console.log("Button clicked! Redirecting...");
+          }}
+        >
+          시작하기!
+        </Button>
         <Button>로그아웃</Button>
       </div>
     </div>
