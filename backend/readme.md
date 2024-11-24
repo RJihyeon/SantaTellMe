@@ -13,7 +13,7 @@ pipenv run python ./backend/app/main.py
 
 실행후 ...
 
-docker-compose downv -v 
+docker-compose down -v 
 ```
 
 ## 테스트방법
