@@ -1,5 +1,5 @@
 // src/Chevron.tsx
-import { JSX } from "preact";
+import { h } from "preact";
 
 interface ChevronPatternProps {
     forecolor?: string;
