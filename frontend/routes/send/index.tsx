@@ -1,7 +1,10 @@
 import { useEffect } from "preact/hooks";
 import Upload from "../../components/send/upload.tsx";
-import SectionUpload from "../../components/send/uploadSection.tsx";
+import SectionUpload from "../../components/send/SectionUpload.tsx";
 import ChevronBg from "../../components/chevronBg.tsx";
+import TitleDivider from "../../components/common/TitleDivider.tsx";
+import SectionSendTo from "../../components/send/SectionSend.tsx";
+import SectionWaitingRoom from "../../components/send/SectionWaitingRoom.tsx";
 
 export default function Home() {
   useEffect(() => {
@@ -15,7 +18,12 @@ export default function Home() {
   return (
     <>
       <ChevronBg />
+      <TitleDivider title="Step 1: Create an encoded message!" />
       <SectionUpload />
+      <TitleDivider title="Step 2: Select recipient" />
+      <SectionSendTo />
+      <TitleDivider title="Step 3: Await a response~" />
+      <SectionWaitingRoom />
     </>
   );
 }

@@ -35,9 +35,15 @@ export default function Upload(props: UploadProps) {
   const message = props.message;
   return (
     <>
-      <form method="post" encType="multipart/form-data">
-        <input type="file" name="my-file" />
-        <button type="submit">Upload</button>
+      <form method="post" encType="multipart/form-data" className={"flex flex-row gap-2 items-center"}>
+        <div>
+          <input type="file" name="my-file" />
+        </div>
+        <div>
+          <button className={"bg-red-400"} type="submit">
+            Upload
+          </button>
+        </div>
       </form>
       {message ? <p>{message}</p> : null}
     </>

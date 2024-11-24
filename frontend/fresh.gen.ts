@@ -8,6 +8,7 @@ import * as $index from "./routes/index.tsx";
 import * as $my_index from "./routes/my/index.tsx";
 import * as $send_index from "./routes/send/index.tsx";
 import * as $Counter from "./islands/Counter.tsx";
+import * as $DropdownListForm from "./islands/DropdownListForm.tsx";
 import * as $uploadResult from "./islands/uploadResult.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -21,6 +22,7 @@ const manifest = {
   },
   islands: {
     "./islands/Counter.tsx": $Counter,
+    "./islands/DropdownListForm.tsx": $DropdownListForm,
     "./islands/uploadResult.tsx": $uploadResult,
   },
   baseUrl: import.meta.url,

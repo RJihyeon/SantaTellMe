@@ -54,3 +54,11 @@ a:hover {
 .wrapper {
   @apply px-4 my-4 lg:max-w-[1300px] lg:mx-auto flex flex-row;
 }
+
+button {
+  @apply px-3 py-2 m-2 rounded-full border-2 border-white bg-red-400 hover:bg-red-600 min-w-20 text-white
+}
+
+input {
+  @apply px-3 py-2 border-b-2 transition-all duration-300
+}
