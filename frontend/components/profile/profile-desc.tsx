@@ -1,73 +1,53 @@
- import { JSX } from "preact";
+import { JSX } from "preact";
 
- export default function Profile() {
-   return (
-     <div style={styles.container}>
-       <div style={styles.avatarContainer}>
-         <img
-           src="https://via.placeholder.com/150"
-           alt="Avatar"
-           style={styles.avatar}
-         />
-       </div>
-       <div style={styles.detailsContainer}>
-         <div style={styles.field}>
-           <strong>Name:</strong> John Doe
-         </div>
-         <div style={styles.field}>
-           <strong>Nickname:</strong> Johnny
-         </div>
-         <div style={styles.field}>
-           <strong>Kakao:</strong> <a href="https://kakao.com/johndoe">Profile Link</a>
-         </div>
-         <div style={styles.field}>
-           <strong>Email:</strong> johndoe@example.com
-         </div>
-         <div style={styles.field}>
-           <strong>Password:</strong> ••••••••
-         </div>
-       </div>
-       <button style={styles.editButton}>Edit Profile</button>
-     </div>
-   );
- }
-
- const styles = {
-   container: {
-     display: 'flex',
-     alignItems: 'center',
-     justifyContent: 'space-between',
-     padding: '20px',
-     border: '1px solid #ccc',
-     borderRadius: '8px',
-     maxWidth: '600px',
-     margin: 'auto',
-     position: 'relative',
-   },
-   avatarContainer: {
-     flexShrink: 0,
-   },
-   avatar: {
-     width: '150px',
-     height: '150px',
-     borderRadius: '50%',
-   },
-   detailsContainer: {
-     flexGrow: 1,
-     marginLeft: '20px',
-   },
-   field: {
-     marginBottom: '10px',
-   },
-   editButton: {
-     position: 'absolute',
-     bottom: '10px',
-     right: '10px',
-     padding: '8px 16px',
-     backgroundColor: '#007bff',
-     color: '#fff',
-     border: 'none',
-     borderRadius: '4px',
-     cursor: 'pointer',
-   },
- };
+export default function Profile() {
+  return (
+    <div
+      className={
+        "flex flex-row flex-wrap gap-2 bg-red-400 rounded-lg md:w-full mx-auto p-2"
+      }
+    >
+      <div className={"md:w-1/5 h-full"}>
+        <img
+          src="https://via.placeholder.com/150"
+          alt="Avatar"
+          className={"rounded-l-lg"}
+        />
+      </div>
+      <div className={"md:w-3/5 h-full"}>
+        <div
+          className={
+            "flex flex-col bg-slate-50 rounded-r-lg place-content-between h-[150px]"
+          }
+        >
+          <div>
+            <strong>Name:</strong> John Doe
+          </div>
+          <div>
+            <strong>Nickname:</strong> Johnny
+          </div>
+          <div>
+            <strong>Email:</strong> johndoe@example.com
+          </div>
+          <hr />
+          <div className={"flex flex-row gap-2 my-2"}>
+            <div>
+              <a href="https://kakao.com/johndoe">
+                <span>Kakao Profile</span>
+              </a>
+            </div>
+            <div>
+              <span>Total guesses: 0</span>
+            </div>
+            <div>
+              <span>Correct %: 100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={"md:w-1/5 h-full"}>
+        <button>Edit Profile</button>
+      </div>
+    </div>
+  );
+}

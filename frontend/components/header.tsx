@@ -24,7 +24,7 @@ const Header = () => {
                   <a href="/send">Send</a>
                 </li>
                 <li>
-                  <a href="/credits">Credits</a>
+                  <a href="/my">Profile</a>
                 </li>
               </ul>
             </div>
