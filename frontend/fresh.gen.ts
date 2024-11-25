@@ -12,6 +12,7 @@ import * as $Counter from "./islands/Counter.tsx";
 import * as $DropdownListForm from "./islands/DropdownListForm.tsx";
 import * as $Inbox from "./islands/Inbox.tsx";
 import * as $ProfileEdit from "./islands/ProfileEdit.tsx";
+import * as $upload from "./islands/upload.tsx";
 import * as $uploadResult from "./islands/uploadResult.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -29,6 +30,7 @@ const manifest = {
     "./islands/DropdownListForm.tsx": $DropdownListForm,
     "./islands/Inbox.tsx": $Inbox,
     "./islands/ProfileEdit.tsx": $ProfileEdit,
+    "./islands/upload.tsx": $upload,
     "./islands/uploadResult.tsx": $uploadResult,
   },
   baseUrl: import.meta.url,

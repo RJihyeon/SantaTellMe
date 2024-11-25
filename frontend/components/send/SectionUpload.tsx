@@ -1,6 +1,6 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import UploadResult from "../../islands/uploadResult.tsx";
-import Upload from "./upload.tsx";
+import Upload from "../../islands/upload.tsx";
 
 export default function SectionUpload() {
   return (
@@ -12,7 +12,7 @@ export default function SectionUpload() {
           <div className={"px-2 my-2 flex flex-col gap-2 items-center"}>
             <h2 className={"hidden"}>Send</h2>
             <h3>Send a file</h3>
-            <Upload message={"Upload a text file"} />
+            <Upload  initialMessage="Upload a text file" />
           </div>
         </div>
         <div className={"w-2 h-full bg-slate-600 hidden md:block"}>
