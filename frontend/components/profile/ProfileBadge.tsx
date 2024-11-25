@@ -7,7 +7,7 @@ export default function ProfileBadge() {
       <h3 className={"hidden"}>Profile badge</h3>
       <div
         className={
-          "p-4 bg-gradient-to-br from-red-400 to-slate-200 rounded-lg lg:w-[40vh] h-full"
+          "p-4 w-full bg-gradient-to-br from-red-400 to-slate-200 rounded-lg lg:w-[40vh] h-full"
         }
       >
         <div className={"w-[150px]"}>

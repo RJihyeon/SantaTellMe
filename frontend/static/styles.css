@@ -52,7 +52,7 @@ a:hover {
 }
 
 .wrapper {
-  @apply w-full lg:w-[70%] lg:max-w-[1280px] lg:mx-auto flex flex-row;
+  @apply w-full md:w-[90%] lg:w-[75%] md:max-w-[1280px] md:mx-auto flex flex-col sm:flex-row ;
 }
 
 button {
