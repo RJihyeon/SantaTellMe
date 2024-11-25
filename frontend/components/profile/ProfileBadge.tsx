@@ -12,9 +12,9 @@ export default function ProfileBadge() {
       >
         <div className={"w-[150px]"}>
           <img
-            src="https://via.placeholder.com/150"
+            src="https://placehold.co/150x150"
             alt="Avatar"
-            className={"rounded-full border-spacing-2 border-white border-4"}
+            className={"rounded-full border-spacing-2 border-white border-4 w-[150px]"}
           />
         </div>
         <div className={"flex flex-col place-content-between p-4"}>
