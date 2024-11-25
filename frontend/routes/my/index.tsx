@@ -16,6 +16,7 @@ export default function ProfilePage(props: PageProps) {
         <SectionProfile />
         <TitleDivider title="Inbox" />
         <SectionInbox />
+        <section className={"mb-[200px]"}></section>
     </>
     );
 }

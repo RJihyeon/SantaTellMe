@@ -10,7 +10,7 @@ export default function TitleDivider({ title }: TitleDividerProps) {
       <div className={"wrapper"}>
         <h2>{title}</h2>
       </div>
-      <hr className={"border-1 bg-black"} />
+      <hr className={"border-1 bg-black mb-4"} />
     </section>
   );
 }

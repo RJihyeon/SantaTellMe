@@ -11,7 +11,7 @@ const Header = () => {
         }
       >
         <div className={"bg-slate-800"}>
-          <div className="w-full lg:w-[70%] max-w-[1300px] flex flex-row justify-between mx-auto">
+          <div className="wrapper flex flex-row justify-between mx-auto">
             <div className={"m-4"}>
               <h2>Santa Tell Me</h2>
             </div>

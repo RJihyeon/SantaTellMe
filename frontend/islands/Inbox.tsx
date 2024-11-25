@@ -34,7 +34,7 @@ export default function Inbox() {
             <article
               key={recording.id}
               className={
-                "flex flex-row justify-between gap-2 items-center  w-full"
+                "flex flex-row justify-between gap-2 items-center w-full"
               }
             >
               <span>

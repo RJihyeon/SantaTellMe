@@ -1,13 +1,17 @@
 // src/profile/SectionProfile.tsx
 import { JSX } from "preact";
-import Profile from "./profile-desc.tsx";
+import ProfileHighlight from "./profile-desc.tsx";
+import ProfileBadge from "./ProfileBadge.tsx";
+import ProfileEdit from "../../islands/ProfileEdit.tsx";
 
 const SectionProfile = () => {
   return (
     <section>
-      <div className={"wrapper"}>
-        <div className={"px-4 my-4 md:w-full"}>
-          <Profile />
+      <div className={"wrapper h-[350px]"}>
+        <ProfileBadge />
+        <div className={"flex flex-col gap-4 w-full mr-4"}>
+          <ProfileHighlight />
+          <ProfileEdit />
         </div>
       </div>
     </section>
