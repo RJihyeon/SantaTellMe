@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import Upload from "../../components/send/upload.tsx";
+import Upload from "../../islands/upload.tsx";
 import SectionUpload from "../../components/send/SectionUpload.tsx";
 import ChevronBg from "../../components/chevronBg.tsx";
 import TitleDivider from "../../components/common/TitleDivider.tsx";
