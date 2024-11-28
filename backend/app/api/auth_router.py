@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/login")
-async def login() -> RedirectResponse:
+async def login() -> str:
     """
     login main entry point
     책임
@@ -25,9 +25,7 @@ async def login() -> RedirectResponse:
         "redirect_uri": Config.Kakako.REDIRECT_URI,
         "response_type": "code",
     }
-    return RedirectResponse(
-        kakao_login_url + "?" + utils.build_query_param(query_param)
-    )
+    return kakao_login_url + "?" + utils.build_query_param(query_param)
 
 
 @router.get("/authenticate")
