@@ -8,9 +8,11 @@ import * as $index from "./routes/index.tsx";
 import * as $my_index from "./routes/my/index.tsx";
 import * as $send_index from "./routes/send/index.tsx";
 import * as $testcookie_index from "./routes/testcookie/index.tsx";
+import * as $Button from "./islands/Button.tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $DropdownListForm from "./islands/DropdownListForm.tsx";
 import * as $Inbox from "./islands/Inbox.tsx";
+import * as $LoginButton from "./islands/LoginButton.tsx";
 import * as $ProfileEdit from "./islands/ProfileEdit.tsx";
 import * as $upload from "./islands/upload.tsx";
 import * as $uploadResult from "./islands/uploadResult.tsx";
@@ -26,9 +28,11 @@ const manifest = {
     "./routes/testcookie/index.tsx": $testcookie_index,
   },
   islands: {
+    "./islands/Button.tsx": $Button,
     "./islands/Counter.tsx": $Counter,
     "./islands/DropdownListForm.tsx": $DropdownListForm,
     "./islands/Inbox.tsx": $Inbox,
+    "./islands/LoginButton.tsx": $LoginButton,
     "./islands/ProfileEdit.tsx": $ProfileEdit,
     "./islands/upload.tsx": $upload,
     "./islands/uploadResult.tsx": $uploadResult,

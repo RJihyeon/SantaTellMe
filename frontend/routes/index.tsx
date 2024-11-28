@@ -1,8 +1,13 @@
-import { Button } from "../components/Button.tsx";
+import { Button } from "../islands/Button.tsx";
 import ChevronPattern from "../components/chevron.tsx";
 import JokeComponent from "../components/joke.tsx";
+import LoginButton from "../islands/LoginButton.tsx";
+
+
 
 export default function Home() {
+
+
   return (
     <div className="mx-auto flex flex-col items-center text-center">
       <div className="bg-[#D23B49] w-full pt-[200px] relative">
@@ -37,6 +42,8 @@ export default function Home() {
         >
           시작하기!
         </Button>
+         {/* 로그인 버튼 */}
+         <LoginButton />
         <Button>로그아웃</Button>
       </div>
     </div>
