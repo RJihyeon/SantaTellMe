@@ -1,3 +1,4 @@
+"use client";
 // components/LoginButton.js
 
 import React from 'react';

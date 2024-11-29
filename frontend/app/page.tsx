@@ -3,7 +3,7 @@
 import React from 'react';
 import JokeComponent from './components/joke';
 import ChevronPattern from './components/chevron';
-import { Button } from './components/Button';
+import Button from './components/Button';
 import LoginButton from './components/LoginButton';
 
 const Home: React.FC = () => {
@@ -29,16 +29,8 @@ const Home: React.FC = () => {
         </div>
       </div>
       <div className="my-[200px] flex flex-row gap-2">
-        {/* <Button
-          onClick={() => {
-            globalThis.location.href = '/login';
-            console.log('Button clicked! Redirecting...');
-          }}
-        >
-          시작하기!
-        </Button>
         <LoginButton />
-        <Button>로그아웃</Button> */}
+        <Button>로그아웃</Button>
       </div>
     </div>
   );
