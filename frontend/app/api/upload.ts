@@ -1,33 +1,22 @@
-import React, { ChangeEvent } from 'react';
+import dotenv from 'dotenv';
 
-// 핸들러: BASE_URL과 AUTH_TOKEN 반환
-import { NextApiRequest, NextApiResponse } from 'next';
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const BASE_URL = process.env.BASE_URL || "http://0.0.0.0:8000";
-  const AUTH_TOKEN = process.env.AUTH_TOKEN || "your-hardcoded-token";
-
-  const responsePayload = {
-    BASE_URL,
-    AUTH_TOKEN,
-  };
-
-  res.status(200).json(responsePayload);
-}
+dotenv.config();
 
 export async function uploadFile(file: File): Promise<string> {
-  const tokenResponse = await fetch('/api/env');
-  if (!tokenResponse.ok) {
-    throw new Error('Failed to retrieve environment variables from server.');
-  }
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const AUTH_TOKEN = process.env.NEXT_PUBLIC_AUTH_TOKEN;
 
-  const { BASE_URL, AUTH_TOKEN } = await tokenResponse.json();
+  console.log('BASE_URL:', BASE_URL);
+  console.log('AUTH_TOKEN:', AUTH_TOKEN);
+
+  if (!BASE_URL || !AUTH_TOKEN) {
+    throw new Error('BASE_URL or AUTH_TOKEN is not defined in the environment variables.');
+  }
 
   const formData = new FormData();
   formData.append('audio_file', file);
 
   const toUserId = 1; // Temporary user ID
-
   const url = `${BASE_URL}/voice?to_user_id=${toUserId}`;
 
   try {
