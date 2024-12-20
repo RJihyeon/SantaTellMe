@@ -104,15 +104,54 @@ async def get_voice_audio(
     return Response(content=audio_binary, media_type="audio/mpeg")
 
 
+
 @router.get("/user/voices")
-async def get_voice_id_list(
+async def get_voice_metadata_for_user(
     user_id: Annotated[int, Depends(JwtAuth())],
     voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
-) -> VoiceIds:
+) -> dict[str, list[VoiceMetaData]]:
+    """
+    요청한 유저가 from_user_id 또는 to_user_id에 해당하는 음성 메타데이터를 반환.
+    """
+    # voice 테이블에서 요청한 user_id가 from_user_id 또는 to_user_id인 항목 검색
     received_voices: list[Voice] = voice_repo.find_by_to_user_id(user_id)
     sent_voices: list[Voice] = voice_repo.find_by_from_user_id(user_id)
 
-    return VoiceIds(
-        received_voice_ids=list(map(lambda v: v.id, received_voices)),
-        sent_voice_ids=list(map(lambda v: v.id, sent_voices)),
-    )
+    if not received_voices and not sent_voices:
+        raise HTTPException(status_code=404, detail="No voices found for the user")
+
+    # received 메타데이터 생성
+    received_metadata = [
+        VoiceMetaData(
+            id=voice.id,
+            s3_id=UUID(bytes=voice.s3_id),
+            from_user=voice.from_user,
+            to_user=voice.to_user,
+            annonymous=voice.annonymous,
+            is_read=voice.is_read,
+            is_correct=voice.is_correct,
+            created_at=voice.created_at,
+        )
+        for voice in received_voices
+    ]
+
+    # sent 메타데이터 생성
+    sent_metadata = [
+        VoiceMetaData(
+            id=voice.id,
+            s3_id=UUID(bytes=voice.s3_id),
+            from_user=voice.from_user,
+            to_user=voice.to_user,
+            annonymous=voice.annonymous,
+            is_read=voice.is_read,
+            is_correct=voice.is_correct,
+            created_at=voice.created_at,
+        )
+        for voice in sent_voices
+    ]
+
+    # 결과 반환
+    return {
+        "received": received_metadata,
+        "sent": sent_metadata,
+    }
