@@ -1,23 +1,83 @@
 "use client";
-// components/LoginButton.js
 
-import React from 'react';
-// import fetchData from '../api/login';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
-const LoginButton = () => {
+interface User {
+  id: string;
+  nickname: string;
+}
+
+const LoginButton: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/getUser", { method: "GET" });
+        const data = await response.json();
+        console.log("Fetched user:", data.user);
+        if (data.user) {
+          setUser(data.user); // Update the user state
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []); // Run once on component mount
+
   const handleLogin = () => {
-    // Redirect the user to the FastAPI login endpoint
+    // Redirect to your login endpoint
     window.location.href = "http://localhost:8000/login";
   };
-  
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "GET" }); // Call the logout API
+      window.location.reload(); // Refresh the page
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const handleStart = () => {
+    // Redirect to your login endpoint
+    window.location.href = "/send";
+  };
+
   return (
-    <button
-      id="fetchButton"
-      onClick={handleLogin}
-      className="px-4 py-2 border-red-300 bg-red-600 border-2 rounded-full hover:bg-gray-200 transition-colors text-white font-extrabold"
-    >
-      로그인
-    </button>
+    <>
+      {user ? (
+        <>
+          <button
+            id="logoutButton"
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+          >
+            로그아웃
+          </button>
+          <button
+            id="sendButton"
+            onClick={handleStart}
+            className="px-4 py-2 bg-red-600 text-white rounded-full hover:bg-red-700"
+          >
+            시작하기
+          </button>
+        </>
+      ) : (
+        <div onClick={handleLogin} className="cursor-pointer">
+          <Image
+            src="/oauth/kakao_login_medium_narrow.png"
+            alt="로그인"
+            width={200} // Adjust as needed
+            height={50} // Adjust as needed
+            className="hover:opacity-80 transition-opacity"
+          />
+        </div>
+      )}
+    </>
   );
 };
 

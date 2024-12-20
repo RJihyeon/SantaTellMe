@@ -72,6 +72,8 @@ async def authenticate(
         # TODO: expire and path
         jwt_token = JwtAuth.create_token(user.id)
 
+        response = RedirectResponse(url="http://localhost:3000")
+
         # Step 5: Set the token in an HttpOnly cookie
         response.set_cookie(
             key="access_token",
@@ -80,12 +82,10 @@ async def authenticate(
             secure=False,  # Set to True in production with HTTPS
             samesite="Lax",
             max_age=3600,
+            path="/",
         )
 
-        # Step 6: Redirect to frontend dashboard or return a response
-        frontend_url = f"http://localhost:3000/dashboard?user_id={user.id}&nickname={user.nickname}"
-
-        return RedirectResponse(url=frontend_url)
+        return response
     
     except HTTPException as http_exc:
         raise http_exc

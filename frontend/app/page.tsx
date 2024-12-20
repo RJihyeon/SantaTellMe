@@ -1,12 +1,11 @@
 // pages/index.tsx
 
-import React from 'react';
-import JokeComponent from './components/joke';
-import ChevronPattern from './components/chevron';
-import Button from './components/Button';
-import LoginButton from './components/LoginButton';
+import React from "react";
+import JokeComponent from "./components/joke";
+import ChevronPattern from "./components/chevron";
+import LoginButton from "./components/LoginButton";
 
-const Home: React.FC = () => {
+const Home: React.FC = async () => {  
   return (
     <div className="mx-auto flex flex-col items-center text-center">
       <div className="bg-[#D23B49] w-full pt-[200px] relative">
@@ -30,7 +29,6 @@ const Home: React.FC = () => {
       </div>
       <div className="my-[200px] flex flex-row gap-2">
         <LoginButton />
-        <Button>로그아웃</Button>
       </div>
     </div>
   );
