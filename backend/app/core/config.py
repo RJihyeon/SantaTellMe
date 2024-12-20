@@ -28,3 +28,6 @@ class Config:
 
     class ENV:
         SERVER_HOST = os.getenv("SERVER_HOST")
+
+    class FRONTEND:
+        NEXT_PUBLIC_BASE_URL = os.getenv("NEXT_PUBLIC_BASE_URL")

@@ -19,73 +19,77 @@ async def login() -> RedirectResponse:
     책임
         - kakao oauth server로 redirect
     """
-    kakao_login_url = "https://kauth.kakao.com/oauth/authorize"
-    query_param = {
-        "client_id": Config.Kakako.ACCESS_KEY,
-        "redirect_uri": Config.Kakako.REDIRECT_URI,
-        "response_type": "code",
-    }
-    return RedirectResponse(
-        kakao_login_url + "?" + utils.build_query_param(query_param)
+    kakao_auth_url = (
+        f"https://kauth.kakao.com/oauth/authorize"
+        f"?client_id={Config.Kakako.ACCESS_KEY}"
+        f"&redirect_uri={Config.Kakako.REDIRECT_URI}"
+        f"&response_type=code"
     )
+    return RedirectResponse(url=kakao_auth_url)
 
-
+    
 @router.get("/authenticate")
-async def auhtenticate(
-    response : Response,
+async def authenticate(
+    response: Response,
     user_repo: Annotated[UserRepository, Depends(get_user_repository)],
     code: str | None = None,
     error: str | None = None,
     error_description: str | None = None,
-) -> JwtResponse:
+) -> dict:
     """
-    (참고) 인증 흐름
-    1. /login 에서 kauth.kakako.com/oauth/authroize로 redirect
-    2. 카카오톡 서버에서 이 api를 호출하며 query param으로 인증코드와 에러 코드들을 넘겨준다.
-
-    책임
-        - 카카오톡 서버로부터 전달받은 인증코드로 access_token 요청 보내기
-        - access_token으로 user info 요청 보내기
-    :param
-        code: 카카오톡 access_token 인증코드
+    Callback function for handling OAuth with Kakao.
     """
     if not code:
         raise HTTPException(
-            status_code=400, detail={"error": error, "error_desc": error_description}
+            status_code=400,
+            detail={
+                "error": error or "Authorization code missing",
+                "error_description": error_description or "No further details provided",
+            },
         )
 
-    access_token: str = request_access_token(
-        redirect_uri=Config.Kakako.REDIRECT_URI,
-        auth_code=code,
-        client_id=Config.Kakako.ACCESS_KEY,
-    )["access_token"]
-    user_kakao_id: int = int(request_user_info(access_token)["id"])
+    try:
+        # Step 1: Exchange the authorization code for an access token
+        access_token: str = request_access_token(
+            redirect_uri=Config.Kakao.REDIRECT_URI,
+            auth_code=code,
+            client_id=Config.Kakao.ACCESS_KEY,
+        )["access_token"]
 
-    # register new user
-    # user: User = User(kakao_id=user_id, username="foo", nickname="foo")
-    user: User | None = user_repo.find_by_kakao_id(user_kakao_id)
-    if user is None:
-        user = User(kakao_id=user_kakao_id, username="foo", nickname="foo")
-        user_repo.insert(user)
+        # Step 2: Fetch user info from Kakao API
+        user_info = request_user_info(access_token)
+        user_kakao_id: int = int(user_info["id"])
+        username = user_info.get("properties", {}).get("nickname", "default_username")
 
-    if user.id is None:
-        raise Exception("user id must not be None")
+        # Step 3: Register user if not exists
+        user = user_repo.find_by_kakao_id(user_kakao_id)
+        if user is None:
+            user = User(kakao_id=user_kakao_id, username=username, nickname=username)
+            user_repo.insert(user)
 
-    # TODO: expire and path
-    jwt_token = JwtAuth.create_token(user.id)
+        if user.id is None:
+            raise Exception("User ID must not be None after insertion")
 
-    # 5. JWT를 HttpOnly 쿠키에 저장
-    response.set_cookie(
-        key="access_token",          # 쿠키 이름
-        value=jwt_token,            # JWT 토큰 값
-        httponly=True,              # HttpOnly 속성 (JS에서 접근 불가)
-        secure=False,               # HTTPS 환경에서 True로 설정
-        samesite="Lax",             # CSRF 방지
-        max_age=3600,               # 쿠키 만료 시간 (초)
-    )
+        # Step 4: Create JWT token
+        jwt_token = JwtAuth.create_token(user.id)
 
-    # 6. 프론트엔드 대시보드로 리디렉션
-    return RedirectResponse(url="http://localhost:8001")
+        # Step 5: Set the token in an HttpOnly cookie
+        response.set_cookie(
+            key="access_token",
+            value=jwt_token,
+            httponly=True,
+            secure=False,  # Set to True in production with HTTPS
+            samesite="Lax",
+            max_age=3600,
+        )
+
+        # Step 6: Redirect to frontend dashboard or return a response
+        return {"message": "Authentication successful", "user": {"id": user.id, "nickname": user.nickname}}
+    
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(exc)}")
 
 
 
