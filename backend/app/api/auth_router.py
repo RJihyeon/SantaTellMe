@@ -51,9 +51,9 @@ async def authenticate(
     try:
         # Step 1: Exchange the authorization code for an access token
         access_token: str = request_access_token(
-            redirect_uri=Config.Kakao.REDIRECT_URI,
+            redirect_uri=Config.Kakako.REDIRECT_URI,
             auth_code=code,
-            client_id=Config.Kakao.ACCESS_KEY,
+            client_id=Config.Kakako.ACCESS_KEY,
         )["access_token"]
 
         # Step 2: Fetch user info from Kakao API
@@ -61,16 +61,15 @@ async def authenticate(
         user_kakao_id: int = int(user_info["id"])
         username = user_info.get("properties", {}).get("nickname", "default_username")
 
-        # Step 3: Register user if not exists
-        user = user_repo.find_by_kakao_id(user_kakao_id)
+        # register new user
+        # user: User = User(kakao_id=user_id, username="foo", nickname="foo")
+        user: User | None = user_repo.find_by_kakao_id(user_kakao_id)
         if user is None:
             user = User(kakao_id=user_kakao_id, username=username, nickname=username)
             user_repo.insert(user)
-
         if user.id is None:
-            raise Exception("User ID must not be None after insertion")
-
-        # Step 4: Create JWT token
+            raise Exception("user id must not be None")
+        # TODO: expire and path
         jwt_token = JwtAuth.create_token(user.id)
 
         # Step 5: Set the token in an HttpOnly cookie
@@ -84,7 +83,9 @@ async def authenticate(
         )
 
         # Step 6: Redirect to frontend dashboard or return a response
-        return {"message": "Authentication successful", "user": {"id": user.id, "nickname": user.nickname}}
+        frontend_url = f"http://localhost:3000/dashboard?user_id={user.id}&nickname={user.nickname}"
+
+        return RedirectResponse(url=frontend_url)
     
     except HTTPException as http_exc:
         raise http_exc
