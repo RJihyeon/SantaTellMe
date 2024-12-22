@@ -1,4 +1,5 @@
-import { getCookie } from "../utils/cookies";
+import dotenv from "dotenv";
+dotenv.config();
 
 export type VoiceData = {
   id: number;
@@ -13,50 +14,73 @@ export const fetchVoiceInbox = async (): Promise<{
   receivedVoices: VoiceData[];
   sentVoices: VoiceData[];
 }> => {
-  try {
-    // 쿠키에서 JWT 토큰 읽기
-    const accessToken = getCookie("accessToken");
-    if (!accessToken) {
-      throw new Error("No access token found in cookies");
-    }
+  console.log("fetchVoiceInbox: Function called");
 
-    const response = await fetch("http://0.0.0.0:8000/user/voices", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`, // 쿠키에서 읽은 토큰 사용
-      },
-    });
+  try {
+    console.log("Fetching voice inbox from API...");
+    console.log(
+      "API URL:",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/voices`
+    );
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/voices`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // 쿠키 포함
+      }
+    );
+
+    console.log("Fetch Response Status:", response.status);
 
     if (!response.ok) {
+      console.error("API request failed:", response);
       throw new Error("Failed to fetch voice inbox");
     }
 
+    // Step 3: API 응답 데이터 읽기
     const data = await response.json();
+    console.log("Fetched Data from API:", data);
+
     const { received, sent } = data;
 
-    // 받은 음성 메타데이터 처리
+    // Step 4: 받은 음성 메타데이터 처리
+    console.log("Processing received voices...");
     const receivedVoices = await Promise.all(
-      received.map(async (voiceMeta: any) => ({
-        id: voiceMeta.id,
-        sender: voiceMeta.from_user,
-        receiver: voiceMeta.to_user,
-        receiveTime: voiceMeta.created_at,
-        guessed: voiceMeta.is_correct ?? false,
-      }))
+      received.map(async (voiceMeta: any) => {
+        console.log("Received Voice Meta:", voiceMeta);
+        return {
+          id: voiceMeta.id,
+          sender: voiceMeta.from_user,
+          receiver: voiceMeta.to_user,
+          receiveTime: voiceMeta.created_at,
+          guessed: voiceMeta.is_correct ?? false,
+        };
+      })
     );
 
-    // 보낸 음성 메타데이터 처리
+    // Step 5: 보낸 음성 메타데이터 처리
+    console.log("Processing sent voices...");
     const sentVoices = await Promise.all(
-      sent.map(async (voiceMeta: any) => ({
-        id: voiceMeta.id,
-        sender: voiceMeta.from_user,
-        receiver: voiceMeta.to_user,
-        receiveTime: voiceMeta.created_at,
-        guessed: voiceMeta.is_correct ?? false,
-      }))
+      sent.map(async (voiceMeta: any) => {
+        console.log("Sent Voice Meta:", voiceMeta);
+        return {
+          id: voiceMeta.id,
+          sender: voiceMeta.from_user,
+          receiver: voiceMeta.to_user,
+          receiveTime: voiceMeta.created_at,
+          guessed: voiceMeta.is_correct ?? false,
+        };
+      })
     );
 
+    console.log("Processed Voices - Received:", receivedVoices);
+    console.log("Processed Voices - Sent:", sentVoices);
+
+    // Step 6: 반환
     return { receivedVoices, sentVoices };
   } catch (error) {
     console.error("Error fetching voice inbox:", error);
