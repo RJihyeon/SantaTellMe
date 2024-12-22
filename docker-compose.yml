@@ -1,16 +1,18 @@
 services:
- mysql:
-  image: mysql
-  environment:
-    MYSQL_DATABASE: test_db
-    #MYSQL_ALLOW_EMPTY_PASSWORD: yes
-    MYSQL_ROOT_PASSWORD: pass
-    MYSQL_USER: test_user
-    MYSQL_PASSWORD: pass
-  ports:
-    - 3306:3306
-  healthcheck:
-    test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-    interval: 2s
-    timeout: 2s
-    retries: 20
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: test_db
+      #MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: pass
+    volumes:
+      - ./backend/data:/docker-entrypoint-initdb.d # create table when container starts
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 2s
+      timeout: 2s
+      retries: 20

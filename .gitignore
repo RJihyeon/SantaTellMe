@@ -5,6 +5,4 @@
 # editor and ide
 .idea
 __pycache__/
-=======
-
-
+.DS_Store
