@@ -1,7 +1,7 @@
 // components/Counter.tsx
 
 import React, { useState } from 'react';
-import { Button } from './Button';
+import Button from './Button';  // default import 방식으로 수정
 
 interface CounterProps {
   initialCount: number;

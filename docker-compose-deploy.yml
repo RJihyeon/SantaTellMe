@@ -30,3 +30,12 @@ services:
     environment:
       # REDIRECT_URI: "http://0.0.0.0:8000/authenticate" # override REDIRECT_URI in env_file
       CONNECTION_URL: "mysql://test_user:pass@santa-db:3306/test_db" # override CONNECTION_URL in env_file
+  santa-front:
+    build:
+      context: ./frontend  
+    ports:
+      - 3000:3000         
+    environment:
+      NEXT_PUBLIC_API_URL: "http://santa-server:8000"  
+    depends_on:
+      - santa-server       
