@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     try {
         // Decode the JWT to extract the user ID
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as { user_id: string };
 
         // Extract FormData from the request
         const formData = await req.formData();
@@ -25,11 +25,11 @@ export async function POST(req: NextRequest) {
         const fileToSend = new File([file], "upload", { type: file.type });
 
         const newFormData = new FormData();
-        newFormData.append("file", fileToSend);
+        newFormData.append("audio_file", fileToSend);
 
         // Forward the request to the backend
         const backendResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/voice?to_user_id=${decoded.id}`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/voice?to_user_id=${decoded.user_id}`,
             {
                 method: "POST",
                 body: newFormData,
