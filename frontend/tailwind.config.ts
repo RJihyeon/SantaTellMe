@@ -1,12 +1,18 @@
-import { type Config } from "tailwindcss";
+import type { Config } from "tailwindcss";
 
 export default {
   content: [
-    "{routes,islands,components}/**/*.{ts,tsx,js,jsx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    fontFamily: {
-      serif: ['Mountains of Christmas', 'serif'],
-    }
-  }
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+      },
+    },
+  },
+  plugins: [],
 } satisfies Config;
