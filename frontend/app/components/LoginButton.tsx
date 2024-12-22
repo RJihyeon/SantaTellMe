@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import login from "../api/login";
 
 interface User {
   id: string;
@@ -29,8 +30,7 @@ const LoginButton: React.FC = () => {
   }, []); // Run once on component mount
 
   const handleLogin = () => {
-    // Redirect to your login endpoint
-    window.location.href = "http://localhost:8000/login";
+    login();
   };
 
   const handleLogout = async () => {
