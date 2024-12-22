@@ -43,7 +43,7 @@ pipenv --python 3.10
 
 ```shell
 pipenv shell
-exit
+deactivate
 ```
 
 ###가상환경에 pipenv 패키지 다운

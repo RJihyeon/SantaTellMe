@@ -1,14 +1,14 @@
 import dotenv from 'dotenv';
-
 dotenv.config();
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const AUTH_TOKEN = process.env.JWT_SECRET;
+
+console.log('Upload.ts');
+console.log('BASE_URL:', BASE_URL);
+console.log('AUTH_TOKEN:', AUTH_TOKEN);
+
 export async function uploadFile(file: File): Promise<string> {
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-  const AUTH_TOKEN = process.env.NEXT_PUBLIC_AUTH_TOKEN;
-
-  console.log('BASE_URL:', BASE_URL);
-  console.log('AUTH_TOKEN:', AUTH_TOKEN);
-
   if (!BASE_URL || !AUTH_TOKEN) {
     throw new Error('BASE_URL or AUTH_TOKEN is not defined in the environment variables.');
   }
