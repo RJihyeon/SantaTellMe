@@ -1,8 +1,38 @@
-// components/ProfileBadge.js
+"use client";
 
-import React from 'react';
+import React, { useEffect, useState } from "react";
 
-const ProfileBadge = () => {
+interface User {
+  id: string;
+  name: string;
+  nickname: string;
+  email: string;
+}
+
+const ProfileBadge: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/getFullUser", { method: "GET" });
+        const data = await response.json();
+        console.log("Fetched user:", data.user);
+        if (data.user) {
+          setUser(data.user); // Update the user state
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []); // Run once on component mount
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="mx-4 h-full">
       <h3 className="hidden">Profile badge</h3>
@@ -16,13 +46,13 @@ const ProfileBadge = () => {
         </div>
         <div className="flex flex-col place-content-between p-4">
           <span>
-            <strong>Name:</strong> John Doe
+            <strong>Name:</strong> {user.name}
           </span>
           <span>
-            <strong>Nickname:</strong> Johnny
+            <strong>Nickname:</strong> {user.nickname}
           </span>
           <span>
-            <strong>Email:</strong> johndoe@example.com
+            <strong>Email:</strong> {user.email}
           </span>
         </div>
       </div>
