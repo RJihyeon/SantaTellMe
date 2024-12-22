@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 
 import jwt
@@ -5,12 +6,14 @@ from fastapi import APIRouter, Depends, HTTPException
 from jwt.exceptions import InvalidTokenError
 
 from auth import JwtAuth
-from models import UserInvitationUrl
 from core import Config
-from repository import get_user_repository, UserRepository
 from entity import User
+from models import UserInvitationUrl
+from repository import get_user_repository, UserRepository
 
 router = APIRouter(dependencies=[Depends(JwtAuth())])
+
+logger = logging.getLogger(__name__)
 
 
 def create_invitation_token(user_id: int) -> str:
@@ -23,7 +26,7 @@ def create_invitation_token(user_id: int) -> str:
 
 @router.get("/invitation/user")
 def get_user_id_by_invitation(
-    token: str, user_repo: Annotated[UserRepository, Depends(get_user_repository)]
+        token: str, user_repo: Annotated[UserRepository, Depends(get_user_repository)]
 ) -> int:
     """
     @param
@@ -34,10 +37,12 @@ def get_user_id_by_invitation(
             jwt.decode(token, Config.JWT.SECRET_KEY, Config.JWT.ALGORITHM)["user_id"]
         )
     except InvalidTokenError as e:
+        logger.error(f"can't decode jwt. token=[{token}]")
         raise HTTPException(401, detail=str(e))
 
     user: User | None = user_repo.find_by_user_id(user_id)
     if user is None:
+        logger.error(f"can't find user with user_id=[{user_id}]")
         raise HTTPException(status_code=404, detail="user not found")
 
     return user_id
@@ -45,7 +50,7 @@ def get_user_id_by_invitation(
 
 @router.get("/user/invitation")
 def generate_invitation_url(
-    user_id: Annotated[int, Depends(JwtAuth())],
+        user_id: Annotated[int, Depends(JwtAuth())],
 ) -> UserInvitationUrl:
     """
     invitation url format: ${server_host}/invitation?token=${jwt}

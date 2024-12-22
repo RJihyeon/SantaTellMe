@@ -1,7 +1,11 @@
+import logging
+
 from sqlalchemy import func, update, select, delete
 from sqlalchemy.orm.session import Session
 
 from entity import Voice
+
+logger = logging.getLogger(__name__)
 
 
 class VoiceRepository:
@@ -9,21 +13,25 @@ class VoiceRepository:
         self.db_session = db_session
 
     def find_by_id(self, voice_id: int) -> Voice | None:
+        logger.debug(f"finding voice by id voice_id:[{voice_id}]")
         query = select(Voice).where(Voice.id == voice_id)
         result = self.db_session.scalars(query).one_or_none()
         return result
 
     def find_by_to_user_id(self, user_id: int) -> list[Voice]:
+        logger.debug(f"finding voice by id to_user_id:[{user_id}]")
         query = select(Voice).where(Voice.to_user == user_id)
         result = self.db_session.scalars(query).all()
         return result
 
     def find_by_from_user_id(self, user_id: int) -> list[Voice]:
+        logger.debug(f"finding voice by id from_user_id:[{user_id}]")
         query = select(Voice).where(Voice.from_user == user_id)
         result = self.db_session.scalars(query).all()
         return result
 
     def count_unread(self, user_id: int) -> int:
+        logger.debug(f"find unread_voice_count user_id:[{user_id}]")
         query = (
             select(func.count()).select_from(Voice).where(Voice.from_user == user_id)
         )
@@ -31,6 +39,7 @@ class VoiceRepository:
         return result
 
     def insert(self, voice: Voice) -> int:
+        logger.debug("inserting voice")
         assert not voice.id
         self.db_session.add(voice)
         self.db_session.commit()
@@ -50,6 +59,7 @@ class VoiceRepository:
             - to_user
             - created_at
         """
+        logger.debug("updating voice")
         self.db_session.execute(
             update(Voice),
             {
@@ -62,5 +72,6 @@ class VoiceRepository:
         self.db_session.commit()
 
     def delete_by_id(self, voice_id: int):
+        logger.debug(f"deleting voice with id=[{voice_id}]")
         self.db_session.execute(delete(Voice).where(Voice.id == voice_id))
         self.db_session.commit()

@@ -1,5 +1,7 @@
-from dotenv import load_dotenv
 import os
+from inspect import ismethod
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -31,3 +33,28 @@ class Config:
 
     class FRONTEND:
         NEXT_PUBLIC_BASE_URL = os.getenv("NEXT_PUBLIC_BASE_URL")
+
+    @classmethod
+    def inspect_env_variable(cls) -> dict[str, str]:
+        return cls._inspect_env_variables(cls)
+
+    @classmethod
+    def _inspect_env_variables(cls, config_cls) -> dict[str, str]:
+
+        env_variables: dict[str, str] = {}
+        for attr_name in dir(config_cls):
+            if attr_name.startswith("_"):
+                continue
+
+            attr_value = getattr(config_cls, attr_name)
+            if ismethod(attr_value):
+                break
+            if isinstance(attr_value, type):
+                nested_result = cls._inspect_env_variables(attr_value)
+                env_variables = env_variables | nested_result
+            elif isinstance(attr_value, str):
+                env_variables[attr_name] = attr_value
+            else:
+                raise Exception(
+                    f"[{attr_name}]=[{attr_value}] should be str type. note that Config and nested class of Config should not have method")
+        return env_variables
