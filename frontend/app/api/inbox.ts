@@ -3,12 +3,16 @@ import { getCookie } from "../utils/cookies";
 export type VoiceData = {
   id: number;
   sender: string;
+  receiver: string;
   receiveTime: string;
   guessed: boolean;
 };
 
-// 받은 음성 목록 가져오기
-export const fetchVoiceInbox = async (): Promise<VoiceData[]> => {
+// 음성 사서함 데이터 가져오기 (받은 메일함과 보낸 메일함 구분)
+export const fetchVoiceInbox = async (): Promise<{
+  receivedVoices: VoiceData[];
+  sentVoices: VoiceData[];
+}> => {
   try {
     // 쿠키에서 JWT 토큰 읽기
     const accessToken = getCookie("accessToken");
@@ -29,39 +33,33 @@ export const fetchVoiceInbox = async (): Promise<VoiceData[]> => {
     }
 
     const data = await response.json();
-    const receivedVoiceIds = data.received_voice_ids;
+    const { received, sent } = data;
 
-    const voices = await Promise.all(
-      receivedVoiceIds.map(async (voiceId: number) => {
-        const voiceMetaResponse = await fetch(
-          `http://0.0.0.0:8000/voice/${voiceId}/meta`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (!voiceMetaResponse.ok) {
-          throw new Error(`Failed to fetch metadata for voice ID: ${voiceId}`);
-        }
-
-        const voiceMeta = await voiceMetaResponse.json();
-
-        return {
-          id: voiceMeta.id,
-          sender: voiceMeta.from_user,
-          receiveTime: voiceMeta.created_at,
-          guessed: voiceMeta.is_correct ?? false,
-        };
-      })
+    // 받은 음성 메타데이터 처리
+    const receivedVoices = await Promise.all(
+      received.map(async (voiceMeta: any) => ({
+        id: voiceMeta.id,
+        sender: voiceMeta.from_user,
+        receiver: voiceMeta.to_user,
+        receiveTime: voiceMeta.created_at,
+        guessed: voiceMeta.is_correct ?? false,
+      }))
     );
 
-    return voices;
+    // 보낸 음성 메타데이터 처리
+    const sentVoices = await Promise.all(
+      sent.map(async (voiceMeta: any) => ({
+        id: voiceMeta.id,
+        sender: voiceMeta.from_user,
+        receiver: voiceMeta.to_user,
+        receiveTime: voiceMeta.created_at,
+        guessed: voiceMeta.is_correct ?? false,
+      }))
+    );
+
+    return { receivedVoices, sentVoices };
   } catch (error) {
     console.error("Error fetching voice inbox:", error);
-    return [];
+    return { receivedVoices: [], sentVoices: [] };
   }
 };

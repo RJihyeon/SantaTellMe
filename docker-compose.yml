@@ -1,5 +1,5 @@
 services:
-  mysql:
+  santa-db:
     image: mysql:8.4
     environment:
       MYSQL_DATABASE: test_db
@@ -16,3 +16,17 @@ services:
       interval: 2s
       timeout: 2s
       retries: 20
+  santa-server:
+    image: santa-server:0.0.1
+    build:
+      context: ./backend
+    ports:
+      - 8000:8000
+    depends_on:
+      santa-db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      # REDIRECT_URI: "http://0.0.0.0:8000/authenticate" # override REDIRECT_URI in env_file
+      CONNECTION_URL: "mysql://test_user:pass@santa-db:3306/test_db" # override CONNECTION_URL in env_file
