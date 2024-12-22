@@ -15,7 +15,8 @@ const Upload: React.FC<UploadProps> = ({ initialMessage }) => {
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("audio_file", file);
+    formData.append("to_user_id", "0");
 
     console.log(file.name);
 

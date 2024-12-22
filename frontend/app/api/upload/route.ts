@@ -13,32 +13,33 @@ export async function POST(req: NextRequest) {
         // Decode the JWT to extract the user ID
         const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as { id: string };
 
-        // Extract FormData from the request
+        // Extract FormData from incoming request
         const formData = await req.formData();
-        const file = formData.get("file") as Blob;
+        const audioFile = formData.get("audio_file") as Blob;
+        const toUserId = formData.get("to_user_id") as string || 'test';
 
-        if (!file) {
+        if (!audioFile) {
             return NextResponse.json({ message: "No file provided" }, { status: 400 });
         }
 
         // Convert Blob to File to ensure proper handling
-        const fileToSend = new File([file], "upload", { type: file.type });
+        const fileToSend = new File([audioFile], "upload.mp3", { type: audioFile.type });
 
         const newFormData = new FormData();
-        newFormData.append("file", fileToSend);
+        newFormData.append("audio_file", fileToSend);
+
+        // Construct the backend URL with to_user_id as a query parameter
+        const backendUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/voice?to_user_id=${toUserId}`;
 
         // Forward the request to the backend
-        const backendResponse = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/voice?to_user_id=${decoded.id}`,
-            {
-                method: "POST",
-                body: newFormData,
-                headers: {
-                    Authorization: `Bearer ${token}`,  // Attach token for double verification
-                    // Do NOT manually set Content-Type here. Let fetch handle it.
-                },
-            }
-        );
+        const backendResponse = await fetch(backendUrl, {
+            method: "POST",
+            body: newFormData,  // Send FormData with only the audio file
+            headers: {
+                Authorization: `Bearer ${token}`,  // Attach token for verification
+                // No Content-Type - Let fetch auto-set it
+            },
+        });
 
         const data = await backendResponse.json();
 
