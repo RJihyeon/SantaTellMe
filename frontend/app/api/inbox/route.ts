@@ -11,11 +11,6 @@ export async function GET(req: NextRequest) {
 
   try {
     console.log("Sending request to FastAPI...");
-    console.log(
-      "API URL:",
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/voices`
-    );
-
     const backendResponse = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/voices`,
       {
@@ -49,6 +44,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // 데이터 그대로 전달
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("Error fetching inbox data:", error);

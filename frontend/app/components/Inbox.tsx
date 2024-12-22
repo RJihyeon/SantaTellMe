@@ -1,84 +1,122 @@
 "use client";
-// components/Inbox.tsx
 
 import React, { useEffect, useState } from "react";
-import { fetchVoiceInbox, VoiceData } from "../api/inbox";
 
 const Inbox: React.FC = () => {
-  const [recordings, setRecordings] = useState<VoiceData[]>([]);
+  const [recordings, setRecordings] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setMessage(null);
+
       try {
-        const { receivedVoices } = await fetchVoiceInbox(); // 받은 메일함 데이터만 사용
-        setRecordings(receivedVoices);
+        console.log("Fetching inbox data from /api/inbox...");
+        const response = await fetch("/api/inbox", {
+          method: "GET",
+          credentials: "include", // 쿠키 포함
+        });
+
+        console.log("Response status:", response.status);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("Error fetching data:", errorData);
+          setMessage(errorData.message || "Failed to fetch data");
+          return;
+        }
+
+        const data = await response.json();
+        console.log("Data received:", data);
+
+        // 받은 데이터가 비어 있으면 메시지 표시
+        if (!data.received || data.received.length === 0) {
+          setMessage("메일함이 비었습니다.");
+          setRecordings([]);
+          return;
+        }
+
+        setRecordings(data.received); // 받은 메일 데이터를 상태에 저장
       } catch (error) {
-        console.error("Error fetching inbox data:", error);
+        console.error("Fetch error:", error);
+        setMessage("데이터를 불러오는 중 문제가 발생했습니다.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
+  // 오디오 재생 함수
+  const handlePlayAudio = (s3_id: string) => {
+    console.log(`Playing audio for S3 ID: ${s3_id}`);
+    const audioUrl = `https://s3.amazonaws.com/your-bucket-name/${s3_id}`;
+    const audio = new Audio(audioUrl);
+    audio.play();
+  };
+
+  // 맞히기 버튼 클릭 시 처리
   const handleGuess = (id: number) => {
     console.log(`Guessing for recording ID: ${id}`);
-    setRecordings((prevRecordings) =>
-      prevRecordings.map((recording) =>
+    setRecordings((prev) =>
+      prev.map((recording) =>
         recording.id === id ? { ...recording, guessed: true } : recording
       )
     );
   };
 
-  const handleShowResult = (id: number) => {
-    console.log(`Showing result for recording ID: ${id}`);
-    alert(`Result for recording ID: ${id}`);
-  };
+  if (loading) return <p>Loading...</p>;
+  if (message) return <p>{message}</p>;
 
   return (
-    <div className="w-full mx-4">
-      <h3 className="text-xl font-bold mb-4">Inbox</h3>
-      <div className="bg-slate-200 rounded-lg p-4 shadow-md">
-        {recordings.length === 0 ? (
-          <p className="text-gray-600">No recordings found in your inbox.</p>
-        ) : (
-          recordings.map((recording, index) => (
-            <React.Fragment key={recording.id}>
-              <article className="flex flex-col sm:flex-row justify-between items-center gap-2 w-full py-2">
-                <div>
-                  <span className="block">
-                    <strong>Sender:</strong> {recording.sender}
-                  </span>
-                  <span className="block">
-                    <strong>Receive Time:</strong> {recording.receiveTime}
-                  </span>
-                </div>
-                <span className="block sm:ml-auto">
-                  <strong>Guessed:</strong> {recording.guessed ? "Yes" : "No"}
-                </span>
-                <div className="flex flex-row justify-end gap-2">
-                  {!recording.guessed && (
-                    <button
-                      onClick={() => handleGuess(recording.id)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                    >
-                      Guess
-                    </button>
-                  )}
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6 text-center">받은 메일함</h1>
+      {recordings.length === 0 ? (
+        <p className="text-gray-500 text-center">메일함이 비어 있습니다.</p>
+      ) : (
+        <div className="space-y-4">
+          {recordings.map((recording) => (
+            <div
+              key={recording.id}
+              className="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
+            >
+              <p className="text-lg font-semibold">
+                <strong>Sender:</strong> {recording.from_user}
+              </p>
+              <p className="text-gray-600">
+                <strong>Received At:</strong> {recording.created_at}
+              </p>
+              <div className="flex gap-4 mt-4">
+                {/* 오디오 재생 버튼 */}
+                <button
+                  onClick={() => handlePlayAudio(recording.s3_id)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors"
+                >
+                  Play Audio
+                </button>
+
+                {/* 맞히기 버튼 */}
+                {!recording.guessed && (
                   <button
-                    onClick={() => handleShowResult(recording.id)}
-                    className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
+                    onClick={() => handleGuess(recording.id)}
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition-colors"
                   >
-                    Show Result
+                    Guess
                   </button>
-                </div>
-              </article>
-              {index < recordings.length - 1 && (
-                <hr className="border-t border-slate-400 my-2" />
-              )}
-            </React.Fragment>
-          ))
-        )}
-      </div>
+                )}
+                {recording.guessed && (
+                  <span className="text-green-600 font-bold">
+                    Already Guessed!
+                  </span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
