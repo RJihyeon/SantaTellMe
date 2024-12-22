@@ -57,17 +57,11 @@ const Inbox: React.FC = () => {
                 </span>
                 <div className="flex flex-row justify-end gap-2">
                   {!recording.guessed && (
-                    <button
-                      onClick={() => handleGuess(recording.id)}
-                      className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                    >
+                    <button onClick={() => handleGuess(recording.id)}>
                       Guess
                     </button>
                   )}
-                  <button
-                    onClick={() => handleShowResult(recording.id)}
-                    className="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600"
-                  >
+                  <button onClick={() => handleShowResult(recording.id)}>
                     Show Result
                   </button>
                 </div>

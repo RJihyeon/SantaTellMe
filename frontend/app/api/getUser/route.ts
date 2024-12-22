@@ -8,6 +8,7 @@ interface User {
 
 export async function GET(request: Request) {
   const cookieHeader = request.headers.get("cookie");
+  console.log("Cookie header:", cookieHeader);
   if (!cookieHeader) {
     return NextResponse.json({ user: null });
   }
@@ -17,6 +18,12 @@ export async function GET(request: Request) {
   );
 
   const token = cookies["access_token"];
+
+  console.log("Cookie Header:", cookieHeader);
+  console.log("Parsed Cookies:", cookies);
+  console.log("Access Token:", token);
+  console.log("JWT Secret:", process.env.JWT_SECRET);
+
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || "") as User;
