@@ -1,6 +1,51 @@
 # SantaTellMe
 Create a warm year-end with SantaTellMe. Express your heart with voice and words!
 
+# recipes
+#### requirments
+- docker, docker compose
+- pipenv 
+- python 3.10
+- .env file
+    - **./SantaTellMe/.env 파일을 노션 페이지에서 복사하기. 카카오 로그인 관련 오류는 .env 파일의 내용이 현제 노션 페이지의 .env와 일치하지 않아서 일 수 있음**
+#### 참고
+- santa-db(mysql container) 띄울시 ./SantaTellMe/backend/data 에 위치한 .sql 파일들 실행됨. table 생성 및 테스트 데이터 추가.
+
+## docker로 service 구동시켜보기
+```
+# 실행 위치: ./SantaTellMe
+# 커맨드: docker-compose up -d <serivce_name or omit> --build
+
+# (ex)
+docker-compose up -d santa-db, santa-server --build             # mysql, server 만 띄우기
+docker-compose up -d santa-db, santa-server santa-front --build # mysql, server, fe 띄우기 생략과 같은 의미
+docker-compose up -d --build                                    # 위와 똑같이 동작
+```
+- service_name: santa-db(필수), santa-server, santa-front 혹은 모든 서비스를 띄울려면 생략
+- `--build`: 코드를 수정하거나 처음 컨테이너를 실행시킬때(이미지가 없을 때) 꼭 붙어야함
+- `-d`: detach mode(로그를 출력하지 않음) 로그를 편하게 볼 수 있음으로 오류 원인 파악시  설정 하지 않는 것 추천
+
+## mysql container 데이터 확인해보기
+```
+mysql -h 127.0.0.1 --port 3306 --user=test_user --password=pass test_db
+```
+- 위 명령어 입력하면 mysql client로 mysql container 접속
+- **mysql client가 깔려있어야 한다**
+
+## server integration test 해보기 
+```
+# 실행위치: ./SantaTellMe
+# 참고: 권한 문제 있으면 chmod u+x test-server.sh 해보기
+# 커맨드: ./test-server.sh
+
+# (ex)
+./test-server.sh
+```
+- `3 passed, 1 warning in 0.87s` 중간에 이렇게 뜨면 성공
+
+
+
+
 # 🎅 산타텔미 프로젝트
 
 ## 📁 프로젝트 폴더 구조

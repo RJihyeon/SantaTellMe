@@ -1,6 +1,7 @@
-from app.main import app
-from fastapi.testclient import TestClient
 import httpx
+from fastapi.testclient import TestClient
+
+from app.main import app
 
 # warning
 # this code depends on /backend/data/sample-data.sql
@@ -48,7 +49,11 @@ def download_binary(access_token: str, voice_id: int) -> httpx.Response:
 def test_get_voice_id_list():
     resp: httpx.Response = get_voice_id_list(user1_jwt)
     assert resp.status_code == 200
-    assert resp.json() == {"received_voice_ids": [4, 7, 9], "sent_voice_ids": [1, 2, 3]}
+    resp_body = resp.json()
+    received_voice_ids = list(map(lambda voice: voice['id'], resp_body['received']))
+    sent_voice_ids = list(map(lambda voice: voice['id'], resp_body['sent']))
+    assert received_voice_ids == [4, 7, 9]
+    assert sent_voice_ids == [1, 2, 3]
 
 
 def test_get_voice_metadata():
