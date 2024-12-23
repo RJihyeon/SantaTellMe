@@ -12,20 +12,20 @@ const SectionReceiveLink: React.FC = () => {
     setLink(pastedText);
 
     // Extract parameter from the pasted link (optional parsing logic)
-    const inviteParam = new URL(pastedText).searchParams.get('invite') || pastedText;
+    const inviteParam = new URL(pastedText).searchParams.get('token') || pastedText;
 
     // Navigate to /send with the parameter
-    router.push(`/send?invite=${encodeURIComponent(inviteParam)}`);
+    router.push(`/send?token=${encodeURIComponent(inviteParam)}`);
   };
 
   return (
     <section>
       <div className="wrapper">
         <div className="h-32 w-full mb-4 bg-red-200 rounded-lg mx-auto flex flex-col items-center justify-center">
-          <h3 className="text-lg mb-4">Paste link here:</h3>
+          <h3 className="text-lg mb-4">Paste your link here:</h3>
           <input
             type="text"
-            className="p-2 border rounded w-3/4"
+            className="p-2 border rounded w-[95%]"
             value={link}
             onPaste={handlePaste}
             onChange={(e) => setLink(e.target.value)}

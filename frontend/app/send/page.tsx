@@ -16,7 +16,7 @@ const Home = () => {
       <SectionUpload />
       {/* <TitleDivider title="Step 2: Select recipient" />
       <SectionSendTo /> */}
-      <TitleDivider title="Step 3: Await a response~" />
+      <TitleDivider title="Step 2: Await a response~" />
       <SectionWaitingRoom />
     </>
   );
