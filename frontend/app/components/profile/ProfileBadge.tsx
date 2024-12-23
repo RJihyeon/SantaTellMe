@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useProfile } from "../ProfileContext";
 
 const ProfileBadge = () => {
-  const [profile, setProfile] = useState<{
-    username: string;
-    nickname: string;
-  } | null>(null);
+  const { username, nickname, setNickname, setUsername } = useProfile();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +16,7 @@ const ProfileBadge = () => {
       try {
         const response = await fetch("/api/profile", {
           method: "GET",
-          credentials: "include", // Include cookies for authentication
+          credentials: "include",
         });
 
         if (!response.ok) {
@@ -28,7 +26,8 @@ const ProfileBadge = () => {
         }
 
         const data = await response.json();
-        setProfile(data); // username, nickname 데이터를 상태에 저장
+        setNickname(data.nickname);
+        setUsername(data.username);
       } catch (err) {
         console.error("Error fetching profile:", err);
         setError("Error fetching profile.");
@@ -38,7 +37,7 @@ const ProfileBadge = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [setNickname]);
 
   if (loading) {
     return <p>Loading profile...</p>;
@@ -61,10 +60,11 @@ const ProfileBadge = () => {
         </div>
         <div className="flex flex-col place-content-between p-4">
           <span>
-            <strong>Username:</strong> {profile?.username}
+            <strong>Username:</strong> {username}
           </span>
           <span>
-            <strong>Nickname:</strong> {profile?.nickname}
+            <strong>Nickname:</strong>{" "}
+            {nickname || "No nickname set. No hint provided."}
           </span>
         </div>
       </div>

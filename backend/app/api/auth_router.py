@@ -69,7 +69,7 @@ async def authenticate(
         # user: User = User(kakao_id=user_id, username="foo", nickname="foo")
         user: User | None = user_repo.find_by_kakao_id(user_kakao_id)
         if user is None:
-            user = User(kakao_id=user_kakao_id, username=username, nickname=username)
+            user = User(kakao_id=user_kakao_id, username=username, nickname="")
             user_repo.insert(user)
         if user.id is None:
             logger.error("user id must not be None")
