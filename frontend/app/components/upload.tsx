@@ -34,7 +34,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
 
   // Handle Upload (Recordings or File)
   const handleUpload = async () => {
-    setLoading(true); // Show loading state
+    setLoading(true);
 
     const formData = new FormData();
     if (file) {
@@ -70,6 +70,11 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
 
   // Start Recording
   const startRecording = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("Your browser does not support audio recording.");
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
@@ -95,7 +100,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
       setMessage("Recording...");
     } catch (error) {
       console.error("Error accessing microphone:", error);
-      alert("Microphone access is required to record audio.");
+      alert("Microphone access denied. Please allow microphone permissions.");
     }
   };
 
