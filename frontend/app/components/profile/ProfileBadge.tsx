@@ -54,7 +54,7 @@ const ProfileBadge = () => {
       <div className="p-4 bg-gradient-to-br from-red-400 to-slate-200 rounded-lg lg:w-[40vh] h-full">
         <div className="w-[150px]">
           <img
-            src="/santa.png"
+            src="/profile.webp"
             alt="Avatar"
             className="rounded-full border-spacing-2 border-white border-4 w-[150px]"
           />
