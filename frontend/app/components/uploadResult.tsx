@@ -3,16 +3,19 @@
 import React from "react";
 import AudioPlayer from "../components/common/AudioPlayer"; // Adjust the path as necessary
 
-const UploadResult: React.FC = () => {
-  const isDownloaded = false;
+interface UploadResultProps {
+  isDownloaded: boolean;
+  audioSrc: string | null;
+}
 
+const UploadResult: React.FC<UploadResultProps> = ({ isDownloaded, audioSrc }) => {
   return (
     <>
-      <h3>{isDownloaded ? "Awaiting upload..." : "Downloaded!"}</h3>
-      {isDownloaded ? (
-        <p>NO FILE</p>
+      <h3>{isDownloaded ? "Downloaded!" : "Awaiting upload..."}</h3>
+      {isDownloaded && audioSrc ? (
+        <AudioPlayer src={audioSrc} />
       ) : (
-        <AudioPlayer src="https://example.com/path/to/audio/file.mp3" />
+        <p>Santa is waiting...</p>
       )}
     </>
   );
