@@ -67,12 +67,12 @@ const SectionShareLink: React.FC = () => {
               />
               <div
                 ref={linkRef}
-                className="flex flex-col items-center justify-center p-4 rounded border w-[95%] mt-4 cursor-pointer self-center whitespace-nowrap bg-white overflow-hidden"
+                className="flex flex-col items-center justify-center p-4 rounded border w-[95%] mt-4 cursor-pointer self-center whitespace-nowrap bg-white overflow-clip"
                 onClick={handleCopyLink}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                <p className="text-gray-500 text-center">
+                <p className="text-gray-500 w-full">
                   {isHovered ? "Click to copy to clipboard" : inviteLink}
                 </p>
               </div>
