@@ -57,5 +57,5 @@ def generate_invitation_url(
     example: http://0.0.0.0:8000/invitation?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ0eXBlIjoidXNlcl9pbnZpdGF0aW9uIn0.LpR5N0xMXGr9Yn8UjsNVm6kcdkdH78HTvMId2f-47gY"
     """
     jwt: str = create_invitation_token(user_id)
-    invitation_url = f"{Config.ENV.SERVER_HOST}/invitation?token={jwt}"
+    invitation_url = f"{Config.FRONTEND.NEXT_PUBLIC_BASE_URL}/send?token={jwt}"
     return UserInvitationUrl(url=invitation_url)
