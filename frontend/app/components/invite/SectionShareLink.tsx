@@ -51,13 +51,13 @@ const SectionShareLink: React.FC = () => {
   return (
     <section>
       <div className="wrapper">
-        <div className="h-72 bg-red-200 rounded-lg p-4 mx-auto flex flex-col items-center justify-center">
+        <div className="h-56 w-full py-4 bg-red-400 rounded-lg mx-auto flex flex-col text-center">
           <h3 className="text-lg mb-4">Your link is:</h3>
           
           {inviteLink ? (
             <div
               ref={linkRef}
-              className="p-2 bg-white rounded border w-3/4 cursor-pointer text-center"
+              className="p-2 bg-white rounded border w-[90%] cursor-pointer self-center overflow-hidden"
               onClick={handleCopyLink}
             >
               {inviteLink}
@@ -67,7 +67,7 @@ const SectionShareLink: React.FC = () => {
           )}
 
           {copied && (
-            <p className="text-green-500 mt-2">Link copied to clipboard!</p>
+            <p className="text-white mt-2">Link copied to clipboard!</p>
           )}
 
           {error && <p className="text-red-500 mt-2">{error}</p>}

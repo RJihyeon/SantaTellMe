@@ -21,7 +21,7 @@ const SectionReceiveLink: React.FC = () => {
   return (
     <section>
       <div className="wrapper">
-        <div className="h-72 bg-red-200 rounded-lg p-4 mx-auto flex flex-col items-center justify-center">
+        <div className="h-32 w-full mb-4 bg-red-200 rounded-lg mx-auto flex flex-col items-center justify-center">
           <h3 className="text-lg mb-4">Paste link here:</h3>
           <input
             type="text"

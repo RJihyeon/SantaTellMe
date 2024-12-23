@@ -9,7 +9,7 @@ interface TitleDividerProps {
 const TitleDivider: React.FC<TitleDividerProps> = ({ title }) => {
   return (
     <section className="mt-12">
-      <div className="wrapper">
+      <div className="wrapper ml-4 md:ml-auto">
         <h2>{title}</h2>
       </div>
       <hr className="border-1 bg-black mb-4" />
