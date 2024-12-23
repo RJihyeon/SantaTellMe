@@ -2,11 +2,11 @@
 Create a warm year-end with SantaTellMe. Express your heart with voice and words!
 
 ## 목차
-- [requirments](#### requirments)
-- [구동방법](### docker로 service 구동시켜보기)
-- [아키텍처](## 아키텍처)
-- [프로젝트_폴더구조](## 📁 프로젝트 폴더 구조)
-- [팀_구성](## Team Member Info)
+- [requirments](# requirments)
+- [구동방법](# docker로 service 구동시켜보기)
+- [아키텍처](# 아키텍처)
+- [프로젝트_폴더구조](# 📁 프로젝트 폴더 구조)
+- [팀_구성](# Team Member Info)
 
 # recipes
 #### requirments
@@ -163,6 +163,8 @@ santatellme/
 ├── README.md                       # 프로젝트 설명 문서
 ├── docker-compose.yml              # Docker Compose 설정 파일
 └── .gitignore                      # Git 무시 파일
+
+'''
 
 ## Team Member Info
 
