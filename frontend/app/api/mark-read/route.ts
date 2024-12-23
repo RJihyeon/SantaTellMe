@@ -1,6 +1,10 @@
+import { getJwt } from "@/app/lib/auth_jwt";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  const { token, user, error } = getJwt(req);
+  if (error) NextResponse.json({ user: null });
+
   try {
     const body = await req.json(); // 클라이언트로부터 JSON 데이터를 파싱
     const { id } = body; // 메시지 ID 가져오기
@@ -14,13 +18,12 @@ export async function POST(req: NextRequest) {
 
     // FastAPI로 요청 전달
     const backendResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/mark-read`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/mark-read?id=${id}`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ id }),
       }
     );
 
