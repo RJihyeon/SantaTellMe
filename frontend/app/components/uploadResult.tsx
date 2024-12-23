@@ -21,9 +21,6 @@ const UploadResult: React.FC<UploadResultProps> = ({ isDownloaded, audioId }) =>
         try {
           const response = await fetch(`/api/voice/${audioId}`, {
             method: "GET",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
           });
 
           if (!response.ok) {

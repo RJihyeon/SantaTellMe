@@ -17,10 +17,6 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError, hint }) => {
   const makeGuessRequest = async (id: string, username: string) => {
     const response = await fetch(`/api/guess?voice_id=${id}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
       body: JSON.stringify({ guessed_from_username: username }),
     });
 
@@ -62,9 +58,6 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError, hint }) => {
     try {
       const response = await fetch(`/api/voice/${id}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
 
       if (!response.ok) {

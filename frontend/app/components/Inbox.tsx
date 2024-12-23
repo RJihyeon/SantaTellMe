@@ -49,9 +49,6 @@ const Inbox: React.FC = () => {
     try {
       const response = await fetch(`/api/voice/${id}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
 
       if (!response.ok) {
