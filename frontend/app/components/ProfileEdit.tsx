@@ -1,13 +1,13 @@
 "use client";
-// components/EditProfileForm.tsx
 
 import React, { useState } from "react";
+import { useProfile } from "./ProfileContext";
 
 const ProfileEdit: React.FC = () => {
-  const [nickname, setNickname] = useState("");
-  const [visibility, setVisibility] = useState("public");
-  const [message, setMessage] = useState<string | null>(null); // 상태 메시지
-  const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
+  const { nickname, setNickname } = useProfile();
+  const [newNickname, setNewNickname] = useState(nickname);
+  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -15,23 +15,17 @@ const ProfileEdit: React.FC = () => {
     setLoading(true);
 
     try {
-      console.log("Submitting nickname update:", nickname);
-
       const response = await fetch("/api/nickname", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ nickname }),
+        body: JSON.stringify({ nickname: newNickname }),
       });
-
-      console.log("Response status:", response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Error response body:", errorText);
-
-        const errorData = JSON.parse(errorText); // JSON으로 변환
+        const errorData = JSON.parse(errorText);
         setMessage(
           `Error: ${errorData.detail || "Failed to update nickname."}`
         );
@@ -39,15 +33,16 @@ const ProfileEdit: React.FC = () => {
       }
 
       const data = await response.json();
-      console.log("Success response data:", data);
+      setNickname(data.nickname);
       setMessage(`Success: ${data.message}`);
     } catch (error) {
       console.error("Error updating nickname:", error);
-      setMessage("알 수 없는 서버 에러입니다.");
+      setMessage("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <div
       style={{
@@ -75,8 +70,8 @@ const ProfileEdit: React.FC = () => {
             type="text"
             id="nickname"
             name="nickname"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            value={newNickname}
+            onChange={(e) => setNewNickname(e.target.value)}
             className="border px-4 py-2 rounded-lg text-sm w-full"
             required
           />
