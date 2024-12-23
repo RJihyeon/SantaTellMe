@@ -12,7 +12,7 @@ class Voice(Base):
     s3_id: Mapped[bytes] = mapped_column(BINARY(16))
     from_user: Mapped[int] = mapped_column(ForeignKey("users.id"))
     to_user: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    annonymous: Mapped[bool] = mapped_column(Boolean, default=False)
+    annonymous: Mapped[bool] = mapped_column(Boolean, default=True)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
