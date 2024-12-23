@@ -6,12 +6,28 @@ interface GuessProps {
   id: number;
   onGuessSuccess: (id: number, sender: string) => void;
   onError?: (message: string) => void;
+  hint: string;
 }
 
-const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError }) => {
+const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError, hint }) => {
   const [username, setUsername] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const makeGuessRequest = async (id: number, username: string) => {
+    const response = await fetch(`/api/guess?voice_id=${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ guessed_from_username: username }),
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || "Failed to guess sender.");
+    return data;
+  };
 
   const handleGuess = async () => {
     if (!username.trim()) {
@@ -23,66 +39,61 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError }) => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/guess?voice_id=${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ guessed_from_username: username }),
-      });
+      const data = await makeGuessRequest(id, username);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        const message = data.detail || "Failed to guess sender.";
-        setErrorMessage(message);
-        onError?.(message);
-        return;
-      }
-
-      // Correct guess일 때만 상태 업데이트
       if (data.message === "Correct guess!") {
-        alert(data.message);
-        onGuessSuccess(id, username); // 클라이언트 입력값을 그대로 sender로 전달
+        alert("You guessed correctly!");
+        onGuessSuccess(id, username);
       } else {
-        setErrorMessage("Incorrect guess. Try again.");
+        setErrorMessage("That guess is incorrect. Try again.");
       }
-    } catch (error) {
-      console.error("Error during guess:", error);
-      const message = "An error occurred while guessing the sender.";
-      setErrorMessage(message);
-      onError?.(message);
+    } catch (error: any) {
+      console.error("Error during guess:", error.message);
+      setErrorMessage(error.message);
+      onError?.(error.message);
     } finally {
       setLoading(false);
     }
   };
 
+  const playAudio = () => {
+    // S3 URL or audio path
+    const audioUrl = `https://your-s3-bucket-url/${id}.mp3`;
+    const audio = new Audio(audioUrl);
+
+    audio.play().catch((error) => {
+      console.error("Error playing audio:", error);
+      alert("Failed to play audio. Please try again.");
+    });
+  };
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
+      <p className="text-gray-500 text-sm">
+        <strong>Hint:</strong> {hint}
+      </p>
       <input
         type="text"
         placeholder="Enter username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="border px-2 py-1 rounded-lg text-sm"
+        className={`border px-2 py-1 rounded-lg text-sm ${
+          loading ? "bg-gray-200 cursor-not-allowed" : ""
+        }`}
+        disabled={loading}
       />
+
       <div className="flex flex-row gap-2">
         <button
-          onClick={handleGuess}
-          disabled={loading}
-          className={`px-4 py-2 w-1/2 text-white rounded-lg text-sm ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600 transition-colors"
-          }`}
+          onClick={playAudio}
+          className="px-4 py-2 w-1/2 text-white bg-blue-500 rounded-lg text-sm hover:bg-blue-600 transition-colors"
         >
           Play Audio
         </button>
         <button
           onClick={handleGuess}
           disabled={loading}
-          className={`px-4 py-2 w-1/2 text-white rounded-lg text-sm ${
+          className={`px-4 py-2 w-full text-white rounded-lg text-sm ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-green-500 hover:bg-green-600 transition-colors"
