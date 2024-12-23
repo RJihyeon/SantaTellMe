@@ -164,7 +164,7 @@ santatellme/
 ├── docker-compose.yml              # Docker Compose 설정 파일
 └── .gitignore                      # Git 무시 파일
 
-'''
+```
 
 ## Team Member Info
 
