@@ -1,4 +1,4 @@
-# SantaTellMe
+# 🎅 산타텔미 프로젝트
 Create a warm year-end with SantaTellMe. Express your heart with voice and words!
 
 ## 목차
@@ -8,7 +8,7 @@ Create a warm year-end with SantaTellMe. Express your heart with voice and words
 - [프로젝트_폴더구조](#-📁-프로젝트-폴더-구조)
 - [팀_구성](#Team-Member-Info)
 
-# recipes
+## recipes
 #### requirments
 - docker, docker compose
 - pipenv 
@@ -52,8 +52,6 @@ mysql -h 127.0.0.1 --port 3306 --user=test_user --password=pass test_db
 
 ## 아키텍처
 
-
-# 🎅 산타텔미 프로젝트
 
 ## 📁 프로젝트 폴더 구조
 
