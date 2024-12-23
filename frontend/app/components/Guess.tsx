@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 interface GuessProps {
   id: string;
-  onGuessSuccess: (id: string, sender: string) => void;
+  onGuessSuccess: (id: string, sender: string, nickname: string) => void;
   onError?: (message: string) => void;
   hint: string;
 }

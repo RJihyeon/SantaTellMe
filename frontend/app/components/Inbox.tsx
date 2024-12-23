@@ -67,7 +67,11 @@ const Inbox: React.FC = () => {
     }
   };
 
-  const handleGuessUpdate = (id: string, fromUser: string) => {
+  const handleGuessUpdate = (
+    id: string,
+    fromUser: string,
+    fromUserNickname: string
+  ) => {
     console.log(
       "[DEBUG] Updating state for ID:",
       id,
@@ -81,6 +85,7 @@ const Inbox: React.FC = () => {
               ...recording,
               is_correct: true,
               from_user_name: fromUser,
+              from_user_nickname: fromUserNickname,
               annonymous: false,
             }
           : recording
@@ -131,11 +136,11 @@ const Inbox: React.FC = () => {
               <div className="flex gap-4 mt-4">
                 {recording.is_read ? (
                   <button
-                  onClick={() => handlePlayAudio(recording.id)}
-                  className="px-4 py-2 w-1/2 text-white bg-blue-500 rounded-lg text-sm hover:bg-blue-600 transition-colors"
-                >
-                  Play Audio
-                </button>
+                    onClick={() => handlePlayAudio(recording.id)}
+                    className="px-4 py-2 w-1/2 text-white bg-blue-500 rounded-lg text-sm hover:bg-blue-600 transition-colors"
+                  >
+                    Play Audio
+                  </button>
                 ) : (
                   <button
                     onClick={() => openModal(recording.id)}

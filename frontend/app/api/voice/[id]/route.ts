@@ -8,7 +8,7 @@ export async function GET(
   const { token, user, error } = getJwt(req);
   if (error) return NextResponse.json({ user: null }, { status: 401 });
 
-  const id = (await params).id
+  const id = (await params).id;
 
   console.log("Fetching audio id " + id);
 
@@ -37,8 +37,11 @@ export async function GET(
       status: 200,
       headers: {
         "Content-Type":
-          backendResponse.headers.get("Content-Type") || "audio/mpeg",
-        "Content-Disposition": `attachment; filename="audio_${id}.wav"`,
+          backendResponse.headers.get("Content-Type") ||
+          (id.endsWith(".mp3") ? "audio/mpeg" : "audio/wav"),
+        "Content-Disposition": `attachment; filename="audio_${
+          id.endsWith(".mp3") ? "audio.mp3" : "audio.wav"
+        }"`,
       },
     });
   } catch (error) {
