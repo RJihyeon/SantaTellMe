@@ -8,7 +8,7 @@ from jwt.exceptions import InvalidTokenError
 from auth import JwtAuth
 from core import Config
 from entity import User
-from models import UserInvitationUrl, UserIdResponse
+from models import UserInvitationUrl, UserIdResponse, UpdateNicknameRequest
 from repository import get_user_repository, UserRepository
 
 router = APIRouter(dependencies=[Depends(JwtAuth())])
@@ -59,3 +59,35 @@ def generate_invitation_url(
     jwt: str = create_invitation_token(user_id)
     invitation_url = f"{Config.FRONTEND.NEXT_PUBLIC_BASE_URL}/send?token={jwt}"
     return UserInvitationUrl(url=invitation_url)
+
+
+
+@router.put("/user/nickname")
+def update_nickname(
+        request: UpdateNicknameRequest,
+        user_id: Annotated[int, Depends(JwtAuth())],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+):
+    """
+    Updates the nickname of the authenticated user.
+
+    @param request: UpdateNicknameRequest containing the new nickname
+    @param user_id: Extracted from JWT (authenticated user)
+    @param user_repo: UserRepository for database interaction
+    """
+    # Validate nickname length
+    if len(request.nickname) < 3 or len(request.nickname) > 30:
+        raise HTTPException(status_code=400, detail="Nickname must be between 3 and 30 characters.")
+
+    # Fetch the user from the database
+    user = user_repo.find_by_user_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+
+    # Update the user's nickname
+    user.nickname = request.nickname
+    try:
+        user_repo.update_user(user)
+        return {"message": "Nickname updated successfully.", "nickname": user.nickname}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="An error occurred while updating the nickname.")

@@ -2,6 +2,7 @@ import logging
 
 from sqlalchemy import func, update, select, delete
 from sqlalchemy.orm.session import Session
+from typing import Optional, List
 
 from entity import Voice
 
