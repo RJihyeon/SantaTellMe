@@ -44,7 +44,12 @@ const Inbox: React.FC = () => {
   }, []);
 
   const handleGuessUpdate = (id: number, fromUser: string) => {
-    console.log("[DEBUG] Updating state for ID:", id, "with fromUser:", fromUser);
+    console.log(
+      "[DEBUG] Updating state for ID:",
+      id,
+      "with fromUser:",
+      fromUser
+    );
     setRecordings((prevRecordings) =>
       prevRecordings.map((recording) =>
         recording.id === id
@@ -57,7 +62,7 @@ const Inbox: React.FC = () => {
           : recording
       )
     );
-    setShowModal(false);  // Close modal after guess
+    setShowModal(false); // Close modal after guess
   };
 
   const openModal = (id: number) => {
@@ -92,9 +97,7 @@ const Inbox: React.FC = () => {
             >
               <p className="text-lg font-semibold text-black">
                 <strong>Sender:</strong>{" "}
-                {!recording.annonymous
-                  ? recording.from_user_name
-                  : "Anonymous"}
+                {!recording.annonymous ? recording.from_user_name : "Anonymous"}
               </p>
               <p className="text-gray-600">
                 <strong>Received At:</strong> {recording.created_at}
@@ -122,9 +125,16 @@ const Inbox: React.FC = () => {
             >
               &times;
             </button>
-            <h2 className="text-xl font-semibold mb-4 text-center">Guess the Sender</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              Guess the Sender
+            </h2>
+
             {selectedId && (
               <Guess
+                hint={
+                  recordings.find((rec) => rec.id === selectedId)
+                    ?.from_user_nickname || "No hint available"
+                }
                 id={selectedId}
                 onGuessSuccess={handleGuessUpdate}
                 onError={(msg) => console.error(msg)}
