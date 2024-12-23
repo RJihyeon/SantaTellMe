@@ -13,7 +13,7 @@ const Home = () => {
       <ChevronBg />
       <TitleDivider title="Share your link!" />
       <SectionShareLink />
-      <TitleDivider title="Paste invite link" />
+      <TitleDivider title="Paste others invite link" />
       <SectionReceiveLink />
     </>
   );
