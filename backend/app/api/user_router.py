@@ -8,7 +8,7 @@ from jwt.exceptions import InvalidTokenError
 from auth import JwtAuth
 from core import Config
 from entity import User
-from models import UserInvitationUrl
+from models import UserInvitationUrl, UserIdResponse
 from repository import get_user_repository, UserRepository
 
 router = APIRouter(dependencies=[Depends(JwtAuth())])
@@ -27,7 +27,7 @@ def create_invitation_token(user_id: int) -> str:
 @router.get("/invitation/user")
 def get_user_id_by_invitation(
         token: str, user_repo: Annotated[UserRepository, Depends(get_user_repository)]
-) -> int:
+) -> UserIdResponse:
     """
     @param
         token: invitation jwt token
@@ -45,7 +45,7 @@ def get_user_id_by_invitation(
         logger.error(f"can't find user with user_id=[{user_id}]")
         raise HTTPException(status_code=404, detail="user not found")
 
-    return user_id
+    return UserIdResponse(user_id=user_id)
 
 
 @router.get("/user/invitation")

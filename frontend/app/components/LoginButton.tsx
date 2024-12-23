@@ -44,7 +44,7 @@ const LoginButton: React.FC = () => {
 
   const handleStart = () => {
     // Redirect to your login endpoint
-    window.location.href = "/send";
+    window.location.href = "/invite";
   };
 
   return (

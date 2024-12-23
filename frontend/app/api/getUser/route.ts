@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { verifyJwt } from "@/app/lib/auth_jwt";
+import { getJwt, verifyJwt } from "@/app/lib/auth_jwt";
 
 export async function GET(request: Request) {
-  const { user, error } = verifyJwt(request);
+  const { token, user, error } = getJwt(request);
   if (error) NextResponse.json({ user: null });
 
-  return user;
+  return NextResponse.json({ user });
 }
