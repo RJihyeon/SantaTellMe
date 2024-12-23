@@ -41,6 +41,17 @@ class UserRepository:
         result = self.db_session.scalars(query).one_or_none()
         return result
 
+    
+    def find_by_username(self, username: str) -> User | None:
+        """
+        주어진 username에 해당하는 User를 반환.
+        """
+        logger.debug(f"Finding user by username={username}")
+        query = select(User).where(User.username == username)
+        result = self.db_session.scalars(query).one_or_none()
+        return result
+
+
     def delete_by_id(self, user_id: int):
         logger.debug(f"deleting use by user_id=[{user_id}]")
         self.db_session.execute(delete(User).where(User.id == user_id))

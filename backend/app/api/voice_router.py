@@ -1,12 +1,14 @@
 import logging
 from typing import Annotated
 from uuid import uuid4, UUID
+from sqlalchemy.orm import Session
+from db import get_session
 
 from fastapi import APIRouter, Depends, UploadFile, HTTPException, Response
 
 from auth import JwtAuth
 from entity import User, Voice
-from models import VoiceMetaData
+from models import VoiceMetaData, GuessInput
 from repository import (
     get_voice_repository,
     get_user_repository,
@@ -163,3 +165,61 @@ async def get_voice_metadata_for_user(
         "received": received_metadata,
         "sent": sent_metadata,
     }
+
+
+
+
+@router.post("/guess")
+def guess_voice(
+        voice_id: int,  # 특정 Voice ID를 입력값으로 추가
+        input: GuessInput,
+        db: Session = Depends(get_session),
+        voice_repo: VoiceRepository = Depends(get_voice_repository),
+        user_repo: UserRepository = Depends(get_user_repository),  # UserRepository 추가
+        user_id: int = Depends(JwtAuth()),
+):
+    """
+    Guess API: 입력받은 `voice_id`, `to_user`, `guessed_from_username`에 따라 Voice의 is_correct와 annonymous를 업데이트.
+    """
+    # guessed_from_username으로 ID 검색
+    guessed_user = user_repo.find_by_username(input.guessed_from_username)
+    if not guessed_user:
+        logger.error(f"No user found with username={input.guessed_from_username}")
+        raise HTTPException(status_code=404, detail="User not found")
+
+    guessed_from_user_id = guessed_user.id  # 검색된 ID 가져오기
+
+    # Voice 레코드 검색
+    voice_record: Voice | None = voice_repo.find_by_id_and_conditions(
+        voice_id=voice_id,
+        to_user=input.to_user,
+        annonymous=True
+    )
+
+    if not voice_record:
+        logger.error(f"No voice record found for voice_id={voice_id}, to_user={input.to_user}, annonymous=True")
+        raise HTTPException(status_code=404, detail="Voice record not found")
+    
+    
+
+    # 사용자 권한 확인: to_user만 접근 가능
+    if user_id != voice_record.to_user:
+        logger.error(f"Unauthorized access attempt. user_id={user_id}, to_user={voice_record.to_user}")
+        raise HTTPException(status_code=403, detail="Unauthorized access")
+
+    # Guess 확인
+    if voice_record.from_user == guessed_from_user_id:
+        # 정답 처리
+        voice_record.is_correct = True
+        voice_record.annonymous = False  # 익명 해제
+        db.commit()
+        db.refresh(voice_record)
+
+        logger.info(f"Correct guess: voice_id={voice_id}, to_user={input.to_user}, guessed_from_user_id={guessed_from_user_id}")
+        return {
+            "message": "Correct guess!",
+            "from_user": voice_record.from_user
+        }
+    else:
+        logger.info(f"Incorrect guess: voice_id={voice_id}, to_user={input.to_user}, guessed_from_user_id={guessed_from_user_id}")
+        return {"message": "Incorrect guess"}
