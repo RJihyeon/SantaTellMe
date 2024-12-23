@@ -1,5 +1,3 @@
-import { JSX } from "preact";
-
 // Jokes courtesy of https://punsandoneliners.com/randomness/programmer-jokes/
 const JOKES = [
   "Ho Ho Ho!",

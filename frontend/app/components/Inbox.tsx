@@ -70,10 +70,6 @@ const Inbox: React.FC = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`, // JWT 토큰
         },
-        body: JSON.stringify({
-          to_user: currentUserId, // 현재 사용자 ID
-          guessed_from_username: guessedFromUsername, // 맞힌 사용자 이름
-        }),
       });
 
       if (!response.ok) {
@@ -133,7 +129,7 @@ const Inbox: React.FC = () => {
                 {/* 맞히기 버튼 */}
                 {!recording.guessed && (
                   <button
-                    onClick={() => handleGuess(recording.id)}
+                    onClick={() => handleGuess(recording.id, "")}
                     className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600 transition-colors"
                   >
                     Guess
