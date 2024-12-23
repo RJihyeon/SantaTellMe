@@ -16,6 +16,7 @@ from repository import (
     VoiceRepository,
     UserRepository,
 )
+from rvc.request import rvc_infer_request
 from s3_service import upload_audio, download_audio
 
 logger = logging.getLogger(__name__)
@@ -43,7 +44,10 @@ async def upload_voice(
     voice_repo.insert(voice)
 
     # upload to s3
-    upload_audio(f"{s3_id}.mp3", await audio_file.read())
+    logger.info("requesting for voice conversion")
+    output_wav = rvc_infer_request(await audio_file.read())
+
+    upload_audio(f"{s3_id}.mp3", output_wav)
 
     # (tmp)
     return VoiceMetaData(
@@ -132,7 +136,7 @@ async def get_voice_metadata_for_user(
     if not received_voices and not sent_voices:
             logger.info(f"No voices found for user_id=[{user_id}]")
             return {"message": "No voices found", "received": [], "sent": []}
-    
+
 
     # received 메타데이터 생성
     received_metadata = []
@@ -228,7 +232,7 @@ def guess_voice(
     else:
         logger.info(f"Incorrect guess: voice_id={voice_id}, to_user={user_id}, guessed_from_user_id={guessed_from_user_id}")
         return {"message": "Incorrect guess"}
-    
+
 @router.post("/mark-read")
 async def mark_read(id: int, db: Session = Depends(get_session)):
     """
@@ -239,7 +243,7 @@ async def mark_read(id: int, db: Session = Depends(get_session)):
         message = db.query(Voice).filter(Voice.id == id).first()
         if not message:
             raise HTTPException(status_code=404, detail="Message not found")
-        
+
         # 읽음 상태로 변경
         message.is_read = True
         db.commit()
