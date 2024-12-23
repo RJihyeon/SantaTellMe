@@ -25,6 +25,7 @@ class VoiceMetaDataWithNames(BaseModel):
     s3_id: UUID
     from_user: int
     from_user_name: str
+    from_user_nickname: str
     to_user: int
     to_user_name: str
     annonymous: bool
