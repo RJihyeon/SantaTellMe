@@ -1,12 +1,12 @@
-"use client"
+"use client";
 // pages/index.js
 
-import React from 'react';
-import SectionUpload from '../components/send/SectionUpload';
-import ChevronBg from '../components/chevronBg';
-import TitleDivider from '../components/common/TitleDivider';
-import SectionSendTo from '../components/send/SectionSend';
-import SectionWaitingRoom from '../components/send/SectionWaitingRoom';
+import React from "react";
+import SectionUpload from "../components/send/SectionUpload";
+import ChevronBg from "../components/chevronBg";
+import TitleDivider from "../components/common/TitleDivider";
+import SectionSendTo from "../components/send/SectionSend";
+import SectionWaitingRoom from "../components/send/SectionWaitingRoom";
 
 const Home = () => {
   return (
