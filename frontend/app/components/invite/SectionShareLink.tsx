@@ -36,12 +36,12 @@ const SectionShareLink: React.FC = () => {
   }, []);
 
   // Copy to clipboard logic
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     if (inviteLink) {
       console.log("Copying link: " + inviteLink);
 
       if (navigator.clipboard) {
-        navigator.clipboard
+        await navigator.clipboard
           .writeText(inviteLink)
           .then(() => {
             setCopied(true);
