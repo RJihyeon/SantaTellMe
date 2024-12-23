@@ -40,11 +40,28 @@ const SentInbox: React.FC = () => {
     fetchSentMessages();
   }, []);
 
-  const handlePlayAudio = (s3_id: string) => {
-    console.log(`Playing audio for S3 ID: ${s3_id}`);
-    const audioUrl = `https://s3.amazonaws.com/your-bucket-name/${s3_id}`; // Replace with your actual bucket URL
-    const audio = new Audio(audioUrl);
-    audio.play();
+  const handlePlayAudio = async (id: string) => {
+    console.log(`Playing audio for voice ID: ${id}`);
+
+    try {
+      const response = await fetch(`/api/voice/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch audio file.");
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (err) {
+      console.error("Error fetching audio:", err);
+    }
   };
 
   if (loading) {
@@ -57,7 +74,9 @@ const SentInbox: React.FC = () => {
 
   return (
     <div className="w-[40vw] mx-auto p-4">
-      <h3 className="hidden text-2xl font-bold mb-6 text-center">Sent Messages</h3>
+      <h3 className="hidden text-2xl font-bold mb-6 text-center">
+        Sent Messages
+      </h3>
       {sentMessages.length === 0 ? (
         <p className="text-gray-500 text-center">No sent messages found.</p>
       ) : (
@@ -78,7 +97,7 @@ const SentInbox: React.FC = () => {
               </p>
               <div className="flex gap-4 mt-4">
                 <button
-                  onClick={() => handlePlayAudio(message.s3_id)}
+                  onClick={() => handlePlayAudio(message.id)}
                   className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors"
                 >
                   Play Audio

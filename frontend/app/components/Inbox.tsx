@@ -8,7 +8,7 @@ const Inbox: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +43,31 @@ const Inbox: React.FC = () => {
     fetchData();
   }, []);
 
-  const handleGuessUpdate = (id: number, fromUser: string) => {
+  const handlePlayAudio = async (id: string) => {
+    console.log(`Playing audio for voice ID: ${id}`);
+
+    try {
+      const response = await fetch(`/api/voice/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch audio file.");
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (err) {
+      console.error("Error fetching audio:", err);
+    }
+  };
+
+  const handleGuessUpdate = (id: string, fromUser: string) => {
     console.log(
       "[DEBUG] Updating state for ID:",
       id,
@@ -65,7 +89,7 @@ const Inbox: React.FC = () => {
     setShowModal(false); // Close modal after guess
   };
 
-  const openModal = (id: number) => {
+  const openModal = (id: string) => {
     setSelectedId(id);
     setShowModal(true);
   };
@@ -85,7 +109,9 @@ const Inbox: React.FC = () => {
 
   return (
     <div className="w-[40vw] mx-auto p-4">
-      <h3 className="hidden text-2xl font-bold mb-6 text-center">Received Messages</h3>
+      <h3 className="hidden text-2xl font-bold mb-6 text-center">
+        Received Messages
+      </h3>
       {recordings.length === 0 ? (
         <p className="text-gray-500 text-center">No messages found.</p>
       ) : (
@@ -103,12 +129,21 @@ const Inbox: React.FC = () => {
                 {new Date(recording.created_at).toLocaleString()}
               </p>
               <div className="flex gap-4 mt-4">
-                <button
-                  onClick={() => openModal(recording.id)}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600"
+                {recording.is_read ? (
+                  <button
+                  onClick={() => handlePlayAudio(recording.id)}
+                  className="px-4 py-2 w-1/2 text-white bg-blue-500 rounded-lg text-sm hover:bg-blue-600 transition-colors"
                 >
-                  Guess
+                  Play Audio
                 </button>
+                ) : (
+                  <button
+                    onClick={() => openModal(recording.id)}
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600"
+                  >
+                    Guess
+                  </button>
+                )}
               </div>
             </div>
           ))}
