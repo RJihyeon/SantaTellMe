@@ -19,6 +19,20 @@ class VoiceMetaData(BaseModel):
     created_at: datetime
 
 
+# VoiceMetaData 모델 확장
+class VoiceMetaDataWithNames(BaseModel):
+    id: int
+    s3_id: UUID
+    from_user: int
+    from_user_name: str
+    to_user: int
+    to_user_name: str
+    annonymous: bool
+    is_read: bool
+    is_correct: bool
+    created_at: str
+
+
 class JwtResponse(BaseModel):
     access_token: str
 
