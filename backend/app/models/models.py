@@ -28,5 +28,4 @@ class UserInvitationUrl(BaseModel):
 
 
 class GuessInput(BaseModel):
-    to_user: int
     guessed_from_username: str

@@ -59,13 +59,45 @@ const Inbox: React.FC = () => {
   };
 
   // 맞히기 버튼 클릭 시 처리
-  const handleGuess = (id: number) => {
+  const handleGuess = async (id: number, guessedFromUsername: string) => {
     console.log(`Guessing for recording ID: ${id}`);
-    setRecordings((prev) =>
-      prev.map((recording) =>
-        recording.id === id ? { ...recording, guessed: true } : recording
-      )
-    );
+
+    try {
+      // 서버에 요청 보내기
+      const response = await fetch(`/api/guess?voice_id=${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // JWT 토큰
+        },
+        body: JSON.stringify({
+          to_user: currentUserId, // 현재 사용자 ID
+          guessed_from_username: guessedFromUsername, // 맞힌 사용자 이름
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error guessing:", errorData.detail);
+        alert(`Error: ${errorData.detail}`);
+        return;
+      }
+
+      // 서버 응답 성공 처리
+      const data = await response.json();
+      console.log("Guess success:", data);
+
+      // 로컬 상태 업데이트
+      setRecordings((prev) =>
+        prev.map((recording) =>
+          recording.id === id ? { ...recording, guessed: true } : recording
+        )
+      );
+      alert("정답입니다! 🎉");
+    } catch (error) {
+      console.error("Error during guess request:", error);
+      alert("서버 요청 중 오류가 발생했습니다.");
+    }
   };
 
   if (loading) return <p>Loading...</p>;
