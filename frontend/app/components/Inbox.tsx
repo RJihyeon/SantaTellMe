@@ -56,6 +56,7 @@ const Inbox: React.FC = () => {
     audio.play();
   };
 
+
   const handleGuessUpdate = (id: number, fromUser: string) => {
     console.log(
       "[DEBUG] Updating state for ID:",
@@ -118,6 +119,7 @@ const Inbox: React.FC = () => {
                 {/* Guess 컴포넌트 */}
                 {recording.annonymous && !recording.is_correct && (
                   <Guess id={recording.id} onGuessSuccess={handleGuessUpdate} />
+
                 )}
               </div>
             </div>
