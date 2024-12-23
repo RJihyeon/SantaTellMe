@@ -3,7 +3,7 @@ import { getJwt } from "@/app/lib/auth_jwt";
 
 export async function GET(request: NextRequest) {
   const { token, user, error } = getJwt(request);
-  if (error) NextResponse.json({ user: null });
+  if (error) return NextResponse.json({ user: null });
 
   try {
     console.log("Sending request to FastAPI...");
@@ -28,7 +28,15 @@ export async function GET(request: NextRequest) {
     const data = await backendResponse.json();
     console.log("Data received from FastAPI:", data);
 
-    // 데이터가 비었을 때 예외 처리
+    // FastAPI가 "No voices found" 메시지를 보낼 때 처리
+    if (data.message === "No voices found") {
+      return NextResponse.json(
+        { message: "메일함이 비었습니다", received: [], sent: [] },
+        { status: 200 }
+      );
+    }
+
+    // 받은 데이터에 대해 검사
     if (
       (!data.received || data.received.length === 0) &&
       (!data.sent || data.sent.length === 0)
@@ -39,7 +47,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 데이터 그대로 전달
+    // 데이터가 있는 경우 그대로 반환
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error("Error fetching inbox data:", error);
