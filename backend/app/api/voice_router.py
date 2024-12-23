@@ -13,6 +13,7 @@ from repository import (
     VoiceRepository,
     UserRepository,
 )
+from rvc.request import rvc_infer_request
 from s3_service import upload_audio, download_audio
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,10 @@ async def upload_voice(
     voice_repo.insert(voice)
 
     # upload to s3
-    upload_audio(f"{s3_id}.mp3", await audio_file.read())
+    logger.info("requesting for voice conversion")
+    output_wav = rvc_infer_request(await audio_file.read())
+
+    upload_audio(f"{s3_id}.mp3", output_wav)
 
     # (tmp)
     return VoiceMetaData(
