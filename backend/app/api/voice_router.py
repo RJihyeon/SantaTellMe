@@ -224,7 +224,6 @@ def guess_voice(
         logger.info(f"Correct guess: voice_id={voice_id}, to_user={user_id}, guessed_from_user_id={guessed_from_user_id}")
         return {
             "message": "Correct guess!",
-            "from_user": voice_record.from_user
         }
     else:
         logger.info(f"Incorrect guess: voice_id={voice_id}, to_user={user_id}, guessed_from_user_id={guessed_from_user_id}")
