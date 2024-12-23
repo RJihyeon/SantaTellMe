@@ -130,8 +130,9 @@ async def get_voice_metadata_for_user(
     sent_voices: List[Voice] = voice_repo.find_by_from_user_id(user_id)
 
     if not received_voices and not sent_voices:
-        logger.error(f"user has no voice user_id=[{user_id}]")
-        raise HTTPException(status_code=404, detail="No voices found for the user")
+            logger.info(f"No voices found for user_id=[{user_id}]")
+            return {"message": "No voices found", "received": [], "sent": []}
+    
 
     # received 메타데이터 생성
     received_metadata = []
@@ -227,3 +228,24 @@ def guess_voice(
     else:
         logger.info(f"Incorrect guess: voice_id={voice_id}, to_user={user_id}, guessed_from_user_id={guessed_from_user_id}")
         return {"message": "Incorrect guess"}
+    
+@router.post("/mark-read")
+async def mark_read(id: int, db: Session = Depends(get_session)):
+    """
+    특정 Voice 메시지를 읽음 상태로 표시합니다.
+    """
+    try:
+        # Voice 메시지 검색
+        message = db.query(Voice).filter(Voice.id == id).first()
+        if not message:
+            raise HTTPException(status_code=404, detail="Message not found")
+        
+        # 읽음 상태로 변경
+        message.is_read = True
+        db.commit()
+        db.refresh(message)
+
+        return {"message": f"Message {id} marked as read"}
+    except Exception as e:
+        logger.error(f"Failed to mark message {id} as read: {e}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
