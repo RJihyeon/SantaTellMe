@@ -180,6 +180,75 @@ async def get_voice_metadata_for_user(
             )
         )
 
+
+@router.get("/user/voices", response_model=dict[str, List[VoiceMetaDataWithNames]])
+async def get_voice_metadata_for_user(
+        user_id: Annotated[int, Depends(JwtAuth())],
+        voice_repo: Annotated[VoiceRepository, Depends(get_voice_repository)],
+        user_repo: Annotated[UserRepository, Depends(get_user_repository)],
+) -> dict[str, List[VoiceMetaDataWithNames]]:
+    """
+    요청한 유저가 from_user_id 또는 to_user_id에 해당하는 음성 메타데이터를 반환,
+    추가로 from_user와 to_user의 이름도 포함.
+    """
+    # voice 테이블에서 요청한 user_id가 from_user_id 또는 to_user_id인 항목 검색
+    received_voices: List[Voice] = voice_repo.find_by_to_user_id(user_id)
+    sent_voices: List[Voice] = voice_repo.find_by_from_user_id(user_id)
+
+    if not received_voices and not sent_voices:
+        logger.info(f"No voices found for user_id=[{user_id}]")
+        return {"received": [], "sent": []}
+
+
+    # received 메타데이터 생성
+    received_metadata = []
+    for voice in received_voices:
+        from_user = user_repo.find_by_user_id(voice.from_user)
+        to_user = user_repo.find_by_user_id(voice.to_user)
+        received_metadata.append(
+            VoiceMetaDataWithNames(
+                id=voice.id,
+                s3_id=UUID(bytes=voice.s3_id),
+                from_user=voice.from_user,
+                from_user_name=from_user.username if from_user else "Unknown",
+                from_user_nickname=from_user.nickname if from_user else "Unknown",
+                to_user=voice.to_user,
+                to_user_name=to_user.username if to_user else "Unknown",
+                annonymous=voice.annonymous,
+                is_read=voice.is_read,
+                is_correct=voice.is_correct,
+                created_at=voice.created_at.isoformat(),
+            )
+        )
+
+    # sent 메타데이터 생성
+    sent_metadata = []
+    for voice in sent_voices:
+        from_user = user_repo.find_by_user_id(voice.from_user)
+        to_user = user_repo.find_by_user_id(voice.to_user)
+        sent_metadata.append(
+            VoiceMetaDataWithNames(
+                id=voice.id,
+                s3_id=UUID(bytes=voice.s3_id),
+                from_user=voice.from_user,
+                from_user_name=from_user.username if from_user else "Unknown",
+                from_user_nickname=from_user.nickname if from_user else "Unknown",
+                to_user=voice.to_user,
+                to_user_name=to_user.username if to_user else "Unknown",
+                annonymous=voice.annonymous,
+                is_read=voice.is_read,
+                is_correct=voice.is_correct,
+                created_at=voice.created_at.isoformat(),
+            )
+        )
+
+    # 결과 반환
+    return {
+        "received": received_metadata,
+        "sent": sent_metadata,
+    }
+
+
     # 결과 반환
     return {
         "received": received_metadata,

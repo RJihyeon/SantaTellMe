@@ -90,7 +90,9 @@ const SentInbox: React.FC = () => {
                 <strong>To:</strong> {message.to_user_name}
               </p>
               <p className="text-gray-600">
-                {new Date(message.created_at).toLocaleString()}
+                {new Date(message.created_at + 'Z').toLocaleString("en-US", {
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                })}
               </p>
               <p className="text-gray-600">
                 <strong>Status:</strong> {message.is_read ? "Read" : "Unread"}

@@ -126,7 +126,9 @@ const Inbox: React.FC = () => {
                 {!recording.annonymous ? recording.from_user_name : "Anonymous"}
               </p>
               <p className="text-gray-600">
-                {new Date(recording.created_at).toLocaleString()}
+                {new Date(recording.created_at + 'Z').toLocaleString("en-US", {
+                  timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                })}
               </p>
               <div className="flex gap-4 mt-4">
                 {recording.is_read ? (

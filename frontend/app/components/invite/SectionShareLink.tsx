@@ -36,18 +36,40 @@ const SectionShareLink: React.FC = () => {
   }, []);
 
   // Copy to clipboard logic
-  const handleCopyLink = () => {
+  const handleCopyLink = async () => {
     if (inviteLink) {
-      navigator.clipboard
-        .writeText(inviteLink)
-        .then(() => {
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000); // Reset "copied" after 2s
-        })
-        .catch(() => {
-          setError("Failed to copy link.");
-        });
+      console.log("Copying link: " + inviteLink);
+
+      if (navigator.clipboard) {
+        await navigator.clipboard
+          .writeText(inviteLink)
+          .then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000); // Reset "copied" after 2s
+          })
+          .catch(() => {
+            setError("Failed to copy link.");
+          });
+      } else {
+        fallbackCopy(inviteLink);
+      }
     }
+  };
+
+  const fallbackCopy = (text: string) => {
+    console.log("Using fallback clipboard mechanism");
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      alert("Copied to clipboard!");
+    } catch (err) {
+      console.error("Fallback copy failed:", err);
+    }
+    document.body.removeChild(textarea);
   };
 
   return (
@@ -73,7 +95,9 @@ const SectionShareLink: React.FC = () => {
                 onMouseLeave={() => setIsHovered(false)}
               >
                 <p className="text-gray-500 w-full">
-                  {isHovered ? "Click to copy to clipboard" : inviteLink}
+                  {isHovered && navigator.clipboard
+                    ? "Click to copy to clipboard"
+                    : inviteLink}
                 </p>
               </div>
               <p className="text-white min-h-7">
