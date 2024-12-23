@@ -3,10 +3,19 @@ import json
 import logging
 from timeit import default_timer as timer
 
+import filetype
 import httpx
 from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
+
+
+def check_extension(input: bytes) -> (bool, str):
+    extension = filetype.guess_extension(input)
+    if extension in ["wav", "mp3"]:
+        return True, extension
+    else:
+        return False, extension
 
 
 def rvc_infer_request(input_wav: bytes) -> bytes:
@@ -15,6 +24,12 @@ def rvc_infer_request(input_wav: bytes) -> bytes:
 
     return: 변환된 wav 파일
     """
+
+    if_supported, extension = check_extension(input_wav)
+    if not if_supported:
+        error_msg = f"extension [{extension}] is not supported"
+        logger.error(error_msg)
+        raise HTTPException(status_code=500, detail=error_msg)
 
     wav_base64_decoded = base64.b64encode(input_wav).decode('utf-8')
 
@@ -31,7 +46,7 @@ def rvc_infer_request(input_wav: bytes) -> bytes:
     if resp.status_code != 200:
         error_msg = f"request for voice conversion failed: status_code=[{resp.status_code}]"
         logger.error(error_msg)
-        raise HTTPException(status_code=500, detail={error_msg})
+        raise HTTPException(status_code=500, detail={"detail": error_msg})
 
     try:
         resp_body = json.loads(resp.content)
@@ -39,6 +54,6 @@ def rvc_infer_request(input_wav: bytes) -> bytes:
     except Exception as e:
         error_msg = f"parsing and decoding response failed =[{str(e)}]"
         logger.error(error_msg)
-        raise HTTPException(status_code=500, detail={error_msg})
+        raise HTTPException(status_code=500, detail={"detail": error_msg})
 
     return output_wav

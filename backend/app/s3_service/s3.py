@@ -28,8 +28,8 @@ def upload_audio(object_key: str, audio: bytes):
 
 def download_audio(object_key: str) -> bytes:
     try:
-        s3_client: S3Client = get_s3_client()
         logger.debug(f"uploading audio with object_key=[{object_key}]")
+        s3_client: S3Client = get_s3_client()
         resp = s3_client.get_object(Bucket=Config.AWS.BUCEKT_NAME, Key=object_key)
         audio_bytes = resp["Body"].read()
     except Exception as e:
