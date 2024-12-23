@@ -34,6 +34,7 @@ def rvc_infer_request(input_wav: bytes) -> bytes:
         raise HTTPException(status_code=500, detail={error_msg})
 
     try:
+        print(resp.content)
         resp_body = json.loads(resp.content)
         output_wav = base64.b64decode(resp_body['wav_b64'])
     except Exception as e:
