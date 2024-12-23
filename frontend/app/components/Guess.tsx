@@ -67,17 +67,30 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError }) => {
         onChange={(e) => setUsername(e.target.value)}
         className="border px-2 py-1 rounded-lg text-sm"
       />
-      <button
-        onClick={handleGuess}
-        disabled={loading}
-        className={`px-4 py-2 text-white rounded-lg text-sm ${
-          loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-green-500 hover:bg-green-600 transition-colors"
-        }`}
-      >
-        {loading ? "Checking..." : "Guess"}
-      </button>
+      <div className="flex flex-row gap-2">
+        <button
+          onClick={handleGuess}
+          disabled={loading}
+          className={`px-4 py-2 w-1/2 text-white rounded-lg text-sm ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 transition-colors"
+          }`}
+        >
+          Play Audio
+        </button>
+        <button
+          onClick={handleGuess}
+          disabled={loading}
+          className={`px-4 py-2 w-1/2 text-white rounded-lg text-sm ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 transition-colors"
+          }`}
+        >
+          {loading ? "Checking..." : "Guess"}
+        </button>
+      </div>
       {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
     </div>
   );
