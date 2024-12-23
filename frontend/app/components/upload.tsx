@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 interface UploadProps {
   initialMessage?: string;
-  onUpload: (fileUrl: string) => void;
+  onUpload: (id: string) => void;
 }
 
 const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
@@ -31,9 +31,12 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
         credentials: "include", // Ensure cookies are sent
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         alert("File uploaded successfully");
-        //onUpload(); TODO get file url from backend
+        console.log("File id saved as: " + data.id);
+        onUpload(data.id);
       } else {
         const error = await response.json();
         alert(`Failed to upload file: ${error.message}`);

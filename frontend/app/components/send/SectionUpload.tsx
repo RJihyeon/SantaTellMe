@@ -8,8 +8,8 @@ const SectionUpload: React.FC = () => {
   const [isDownloaded, setIsDownloaded] = useState(false);
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
 
-  const handleUpload = (fileUrl: string) => {
-    setAudioSrc(fileUrl);
+  const handleUpload = (id: string) => {
+    setAudioSrc(id);
     setIsDownloaded(true);
   };
 
@@ -32,7 +32,7 @@ const SectionUpload: React.FC = () => {
         <div className="w-full h-full bg-red-200 rounded-r-lg">
           <div className="px-2 my-2 flex flex-col gap-2 items-center">
             <h2 className="hidden">Result</h2>
-            <UploadResult isDownloaded={isDownloaded} audioSrc={audioSrc} />
+            <UploadResult isDownloaded={isDownloaded} audioId={audioSrc} />
           </div>
         </div>
       </div>
