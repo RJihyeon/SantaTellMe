@@ -3,22 +3,25 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { token, user, error } = getJwt(req);
-  if (error) NextResponse.json({ user: null });
+  if (error) return NextResponse.json({ user: null }, { status: 401 });
 
-  const { id } = params;
+  const id = (await params).id
 
   console.log("Fetching audio id " + id);
 
   try {
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/voice/${id}/audio`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const backendResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/voice/${id}/audio`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     if (!backendResponse.ok) {
       const errorData = await backendResponse.json();
@@ -35,7 +38,7 @@ export async function GET(
       headers: {
         "Content-Type":
           backendResponse.headers.get("Content-Type") || "audio/mpeg",
-        "Content-Disposition": `attachment; filename="audio_${id}.mp3"`,
+        "Content-Disposition": `attachment; filename="audio_${id}.wav"`,
       },
     });
   } catch (error) {
