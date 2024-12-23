@@ -84,8 +84,8 @@ const Inbox: React.FC = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-6 text-center">Received Messages</h1>
+    <div className="w-[40vw] mx-auto p-4">
+      <h3 className="hidden text-2xl font-bold mb-6 text-center">Received Messages</h3>
       {recordings.length === 0 ? (
         <p className="text-gray-500 text-center">No messages found.</p>
       ) : (
@@ -100,7 +100,7 @@ const Inbox: React.FC = () => {
                 {!recording.annonymous ? recording.from_user_name : "Anonymous"}
               </p>
               <p className="text-gray-600">
-                <strong>Received At:</strong> {recording.created_at}
+                {new Date(recording.created_at).toLocaleString()}
               </p>
               <div className="flex gap-4 mt-4">
                 <button
