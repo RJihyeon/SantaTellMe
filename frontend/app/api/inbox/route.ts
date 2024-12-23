@@ -1,13 +1,15 @@
 import { NextResponse, NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+import { getJwt } from "@/app/lib/auth_jwt";
 
-export async function GET(req: NextRequest) {
-  const token = req.cookies.get("access_token")?.value;
+interface User {
+  id: string;
+  nickname: string;
+}
 
-  if (!token) {
-    console.error("No access token provided in cookies.");
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
+export async function GET(request: NextRequest) {
+  const { token, user, error } = getJwt(request);
+  if (error) NextResponse.json({ user: null });
 
   try {
     console.log("Sending request to FastAPI...");
