@@ -91,3 +91,21 @@ def update_nickname(
         return {"message": "Nickname updated successfully.", "nickname": user.nickname}
     except Exception as e:
         raise HTTPException(status_code=500, detail="An error occurred while updating the nickname.")
+    
+
+@router.get("/user/profile")
+def get_user_profile(
+    user_id: int = Depends(JwtAuth()),
+    user_repo: UserRepository = Depends(get_user_repository)
+):
+    """
+    현재 로그인된 사용자의 프로필 정보를 반환.
+    """
+    user = user_repo.find_by_user_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {
+        "username": user.username,
+        "nickname": user.nickname
+    }
