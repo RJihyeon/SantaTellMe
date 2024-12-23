@@ -49,12 +49,27 @@ const ProfileEdit: React.FC = () => {
     }
   };
   return (
-    <div className="flex items-center justify-center">
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+        backgroundColor: "#f9fafb",
+      }}
+    >
       <form
         onSubmit={handleSubmit}
-        className="bg-slate-200 p-4 rounded-lg w-full"
+        style={{
+          backgroundColor: "#e2e8f0",
+          padding: "16px",
+          borderRadius: "8px",
+          width: "100%",
+          alignContent: "center",
+          height: "100%",
+        }}
       >
-        <div className="mb-4">
+        <div className="mb-4 ">
           <label htmlFor="nickname">Nickname:</label>
           <input
             type="text"
@@ -62,12 +77,12 @@ const ProfileEdit: React.FC = () => {
             name="nickname"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            className="border px-2 py-1 rounded-lg text-sm w-full"
+            className="border px-4 py-2 rounded-lg text-sm w-full"
             required
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-4 flex justify-center">
           <button
             type="submit"
             disabled={loading}
