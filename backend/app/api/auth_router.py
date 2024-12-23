@@ -91,7 +91,7 @@ async def authenticate(
             max_age=3600,
             path="/",
         )
-
+        print("Response Headers:", response.headers)
         return response
 
     except HTTPException as http_exc:

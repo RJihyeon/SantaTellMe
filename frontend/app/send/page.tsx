@@ -14,8 +14,8 @@ const Home = () => {
       <ChevronBg />
       <TitleDivider title="Step 1: Create an encoded message!" />
       <SectionUpload />
-      <TitleDivider title="Step 2: Select recipient" />
-      <SectionSendTo />
+      {/* <TitleDivider title="Step 2: Select recipient" />
+      <SectionSendTo /> */}
       <TitleDivider title="Step 3: Await a response~" />
       <SectionWaitingRoom />
     </>

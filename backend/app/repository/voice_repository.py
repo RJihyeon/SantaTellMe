@@ -2,6 +2,7 @@ import logging
 
 from sqlalchemy import func, update, select, delete
 from sqlalchemy.orm.session import Session
+from typing import Optional, List
 
 from entity import Voice
 
@@ -23,6 +24,22 @@ class VoiceRepository:
         query = select(Voice).where(Voice.to_user == user_id)
         result = self.db_session.scalars(query).all()
         return result
+    
+   
+    
+    def find_by_id_and_conditions(self, voice_id: int, to_user: int, annonymous: bool) -> Voice | None:
+        """
+        특정 voice_id와 to_user, annonymous 조건을 만족하는 Voice 레코드를 반환.
+        """
+        logger.debug(f"Finding voice by voice_id={voice_id}, to_user={to_user}, annonymous={annonymous}")
+        query = select(Voice).where(
+            Voice.id == voice_id,
+            Voice.to_user == to_user,
+            Voice.annonymous == annonymous
+        )
+        result = self.db_session.scalars(query).one_or_none()
+        return result
+
 
     def find_by_from_user_id(self, user_id: int) -> list[Voice]:
         logger.debug(f"finding voice by id from_user_id:[{user_id}]")

@@ -41,7 +41,46 @@ class UserRepository:
         result = self.db_session.scalars(query).one_or_none()
         return result
 
+    
+    def find_by_username(self, username: str) -> User | None:
+        """
+        주어진 username에 해당하는 User를 반환.
+        """
+        logger.debug(f"Finding user by username={username}")
+        query = select(User).where(User.username == username)
+        result = self.db_session.scalars(query).one_or_none()
+        return result
+
+
     def delete_by_id(self, user_id: int):
         logger.debug(f"deleting use by user_id=[{user_id}]")
         self.db_session.execute(delete(User).where(User.id == user_id))
         self.db_session.commit()
+
+    def update_user(self, user: User):
+        """
+        Updates the user's information in the database.
+
+        @param user: The user entity with updated fields.
+        """
+        try:
+            self.db_session.add(user)
+            self.db_session.commit()
+        except Exception as e:
+            self.db_session.rollback()
+            raise e
+        
+    def find_by_nickname(self, nickname: str) -> User | None:
+        """
+        Finds a user by their nickname.
+
+        @param nickname: The nickname to search for.
+        @return: User object if found, else None.
+        """
+        try:
+            return self.db_session.query(User).filter(User.nickname == nickname).one_or_none()
+        except Exception as e:
+            logger.error(f"Error finding user with nickname {nickname}: {e}")
+            return None
+        
+        

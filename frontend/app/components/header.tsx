@@ -18,7 +18,7 @@ const Header = () => {
                   <a href="/">Home</a>
                 </li>
                 <li>
-                  <a href="/send">Send</a>
+                  <a href="/invite">Invite</a>
                 </li>
                 <li>
                   <a href="/my">Profile</a>
