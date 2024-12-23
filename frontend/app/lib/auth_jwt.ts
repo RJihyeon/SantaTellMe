@@ -6,25 +6,7 @@ interface DecodedUser {
     email: string;
 }
 
-export function verifyJwt(req: Request): { user: DecodedUser | null, error: NextResponse | null } {
-    const cookieHeader = req.headers.get("cookie");
-
-    if (!cookieHeader) {
-        return {
-            user: null,
-            error: NextResponse.json(
-                { message: "Unauthorized: No token provided" },
-                { status: 401 }
-            ),
-        };
-    }
-
-    // Extract the token from the cookie string
-    const token = cookieHeader
-        .split('; ')
-        .find(row => row.startsWith('access_token='))
-        ?.split('=')[1];
-
+export function verifyJwt(token: string | undefined): { user: DecodedUser | null, error: NextResponse | null } {
     if (!token) {
         return {
             user: null,

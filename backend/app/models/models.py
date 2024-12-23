@@ -36,6 +36,9 @@ class VoiceMetaDataWithNames(BaseModel):
 class JwtResponse(BaseModel):
     access_token: str
 
+class UserIdResponse(BaseModel):
+    user_id: int
+
 
 class UserInvitationUrl(BaseModel):
     url: str

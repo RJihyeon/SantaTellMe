@@ -1,4 +1,5 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 interface UploadProps {
@@ -7,6 +8,8 @@ interface UploadProps {
 
 const Upload: React.FC<UploadProps> = ({ initialMessage }) => {
   const [message, setMessage] = useState(initialMessage || "");
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token') || "";
 
   const handleUpload = async (file: File | undefined) => {
     if (!file) {
@@ -20,7 +23,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage }) => {
     console.log(file.name);
 
     try {
-      const response = await fetch("/api/upload", {
+      const response = await fetch("/api/upload?token="+ token, {
         method: "POST",
         body: formData,
         credentials: "include", // Ensure cookies are sent
