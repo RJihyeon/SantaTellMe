@@ -25,3 +25,8 @@ class JwtResponse(BaseModel):
 
 class UserInvitationUrl(BaseModel):
     url: str
+
+
+class GuessInput(BaseModel):
+    to_user: int
+    guessed_from_username: str
