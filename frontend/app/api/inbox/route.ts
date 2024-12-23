@@ -1,11 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 import { getJwt } from "@/app/lib/auth_jwt";
-
-interface User {
-  id: string;
-  nickname: string;
-}
 
 export async function GET(request: NextRequest) {
   const { token, user, error } = getJwt(request);
@@ -19,7 +13,6 @@ export async function GET(request: NextRequest) {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
       }
     );

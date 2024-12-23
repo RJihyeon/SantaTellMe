@@ -6,5 +6,5 @@ export async function GET(request: Request) {
   const { user, error } = verifyJwt(request);
   if (error) NextResponse.json({ user: null });
 
-  return user;
+  return NextResponse.json({ user });
 }
