@@ -4,12 +4,12 @@ from uuid import uuid4, UUID
 from sqlalchemy.orm import Session
 from db import get_session
 
-
 from fastapi import APIRouter, Depends, UploadFile, HTTPException, Response
 
 from auth import JwtAuth
 from entity import User, Voice
 from models import VoiceMetaData, GuessInput, VoiceMetaDataWithNames
+
 from repository import (
     get_voice_repository,
     get_user_repository,
@@ -178,7 +178,6 @@ async def get_voice_metadata_for_user(
         "received": received_metadata,
         "sent": sent_metadata,
     }
-
 
 @router.post("/guess")
 def guess_voice(
