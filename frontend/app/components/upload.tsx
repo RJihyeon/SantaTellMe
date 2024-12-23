@@ -1,15 +1,17 @@
 "use client";
+
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 interface UploadProps {
   initialMessage?: string;
+  onUpload: (id: string) => void;
 }
 
-const Upload: React.FC<UploadProps> = ({ initialMessage }) => {
+const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
   const [message, setMessage] = useState(initialMessage || "");
   const searchParams = useSearchParams();
-  const token = searchParams.get('token') || "";
+  const token = searchParams.get("token") || "";
 
   const handleUpload = async (file: File | undefined) => {
     if (!file) {
@@ -23,14 +25,18 @@ const Upload: React.FC<UploadProps> = ({ initialMessage }) => {
     console.log(file.name);
 
     try {
-      const response = await fetch("/api/upload?token="+ token, {
+      const response = await fetch("/api/upload?token=" + token, {
         method: "POST",
         body: formData,
         credentials: "include", // Ensure cookies are sent
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         alert("File uploaded successfully");
+        console.log("File id saved as: " + data.id);
+        onUpload(data.id);
       } else {
         const error = await response.json();
         alert(`Failed to upload file: ${error.message}`);
@@ -74,7 +80,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage }) => {
         onSubmit={handleFormSubmit} // Add form submit event handler
       >
         <div>
-          <input type="file" name="my-file" accept=".mp3" />
+          <input type="file" name="my-file" accept=".wav"/>
         </div>
         <div>
           <button className="bg-red-400" type="submit">

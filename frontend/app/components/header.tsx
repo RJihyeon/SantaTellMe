@@ -7,13 +7,13 @@ const Header = () => {
   return (
     <header>
       <div className="w-full mx-auto text-white relative">
-        <div className="bg-slate-800">
+        <div className="bg-slate-900">
           <div className="wrapper flex flex-row justify-between mx-auto">
             <div className="m-4">
-              <h2>Santa Tell Me</h2>
+            <a className='hover:no-underline' href="/"><h2>Santa Tell Me</h2></a>
             </div>
             <div className="m-4">
-              <ul style={styles.navList} className="h-full flex flex-row gap-2 lg:gap-6 items-center">
+              <ul style={styles.navList} className="h-full flex flex-row gap-4 lg:gap-6 items-center">
                 <li>
                   <a href="/">Home</a>
                 </li>
@@ -28,7 +28,7 @@ const Header = () => {
           </div>
         </div>
         <div className="absolute w-full z-30">
-          <ChevronPattern forecolor="#282c34" />
+          <ChevronPattern forecolor="#0F172A" />
         </div>
       </div>
     </header>
@@ -37,7 +37,7 @@ const Header = () => {
 
 const styles = {
   header: {
-    backgroundColor: '#282c34',
+    backgroundColor: '#0F172A',
     color: 'white',
     textAlign: 'center',
   },

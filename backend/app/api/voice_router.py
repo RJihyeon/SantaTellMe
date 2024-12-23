@@ -134,8 +134,8 @@ async def get_voice_metadata_for_user(
     sent_voices: List[Voice] = voice_repo.find_by_from_user_id(user_id)
 
     if not received_voices and not sent_voices:
-            logger.info(f"No voices found for user_id=[{user_id}]")
-            return {"message": "No voices found", "received": [], "sent": []}
+        logger.info(f"No voices found for user_id=[{user_id}]")
+        return {"received": [], "sent": []}
 
 
     # received 메타데이터 생성

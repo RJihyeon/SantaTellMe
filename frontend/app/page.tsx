@@ -8,9 +8,9 @@ import LoginButton from "./components/LoginButton";
 const Home: React.FC = async () => {  
   return (
     <div className="mx-auto flex flex-col items-center text-center">
-      <div className="bg-[#D23B49] w-full pt-[200px] relative">
-        <div className="w-full lg:w-[70%] max-w-[1300px] mx-auto">
-          <div>
+      <div className="bg-[#D23B49] w-full pt-36 relative">
+        <div className="wrapper">
+          <div className="w-full">
             <img
               src="/santa.png"
               width="128"
