@@ -43,3 +43,7 @@ class UserInvitationUrl(BaseModel):
 
 class GuessInput(BaseModel):
     guessed_from_username: str
+
+
+class UpdateNicknameRequest(BaseModel):
+    nickname: str
