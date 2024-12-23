@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 
 interface GuessProps {
-  id: number;
-  onGuessSuccess: (id: number, sender: string) => void;
+  id: string;
+  onGuessSuccess: (id: string, sender: string) => void;
   onError?: (message: string) => void;
   hint: string;
 }
@@ -14,7 +14,7 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError, hint }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const makeGuessRequest = async (id: number, username: string) => {
+  const makeGuessRequest = async (id: string, username: string) => {
     const response = await fetch(`/api/guess?voice_id=${id}`, {
       method: "POST",
       headers: {
@@ -56,15 +56,28 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError, hint }) => {
     }
   };
 
-  const playAudio = () => {
-    // S3 URL or audio path
-    const audioUrl = `https://your-s3-bucket-url/${id}.mp3`;
-    const audio = new Audio(audioUrl);
+  const handlePlayAudio = async (id: string) => {
+    console.log(`Playing audio for voice ID: ${id}`);
 
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-      alert("Failed to play audio. Please try again.");
-    });
+    try {
+      const response = await fetch(`/api/voice/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch audio file.");
+      }
+
+      const blob = await response.blob();
+      const audioUrl = URL.createObjectURL(blob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+    } catch (err) {
+      console.error("Error fetching audio:", err);
+    }
   };
 
   return (
@@ -85,13 +98,13 @@ const Guess: React.FC<GuessProps> = ({ id, onGuessSuccess, onError, hint }) => {
 
       <div className="flex flex-row gap-2">
         <button
-          onClick={playAudio}
+          onClick={() => handlePlayAudio(id)}
           className="px-4 py-2 w-1/2 text-white bg-blue-500 rounded-lg text-sm hover:bg-blue-600 transition-colors"
         >
           Play Audio
         </button>
         <button
-          onClick={handleGuess}
+          onClick={() => handleGuess()}
           disabled={loading}
           className={`px-4 py-2 w-full text-white rounded-lg text-sm ${
             loading
