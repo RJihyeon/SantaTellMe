@@ -80,7 +80,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
         onSubmit={handleFormSubmit} // Add form submit event handler
       >
         <div>
-          <input type="file" name="my-file" accept=".mp3" />
+          <input type="file" name="my-file" accept=".wav"/>
         </div>
         <div>
           <button className="bg-red-400" type="submit">
