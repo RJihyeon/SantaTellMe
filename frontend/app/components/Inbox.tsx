@@ -48,14 +48,43 @@ const Inbox: React.FC = () => {
     console.log("[DEBUG] Recordings state updated:", recordings);
   }, [recordings]);
 
-  // 오디오 재생 함수
-  const handlePlayAudio = (s3_id: string) => {
+  const handlePlayAudio = async (s3_id: string, id: number) => {
     console.log(`[DEBUG] Playing audio for S3 ID: ${s3_id}`);
     const audioUrl = `https://s3.amazonaws.com/your-bucket-name/${s3_id}`;
     const audio = new Audio(audioUrl);
     audio.play();
-  };
 
+    try {
+      console.log(`[DEBUG] Sending mark-read request for ID: ${id}`);
+      const response = await fetch("/api/mark-read", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("[DEBUG] Error marking message as read:", errorData);
+        return;
+      }
+
+      console.log("[DEBUG] Successfully marked as read.");
+      setRecordings((prevRecordings) =>
+        prevRecordings.map((recording) =>
+          recording.id === id
+            ? {
+                ...recording,
+                is_read: true,
+              }
+            : recording
+        )
+      );
+    } catch (error) {
+      console.error("[DEBUG] Error in mark-read request:", error);
+    }
+  };
 
   const handleGuessUpdate = (id: number, fromUser: string) => {
     console.log(
@@ -111,7 +140,7 @@ const Inbox: React.FC = () => {
               </p>
               <div className="flex gap-4 mt-4">
                 <button
-                  onClick={() => handlePlayAudio(recording.s3_id)}
+                  onClick={() => handlePlayAudio(recording.s3_id, recording.id)}
                   className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition-colors"
                 >
                   Play Audio
@@ -119,7 +148,6 @@ const Inbox: React.FC = () => {
                 {/* Guess 컴포넌트 */}
                 {recording.annonymous && !recording.is_correct && (
                   <Guess id={recording.id} onGuessSuccess={handleGuessUpdate} />
-
                 )}
               </div>
             </div>
