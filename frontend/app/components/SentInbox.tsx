@@ -67,6 +67,12 @@ const SentInbox: React.FC = () => {
       }
 
       console.log("Successfully marked read: " + id);
+
+      setSentMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg.id === id ? { ...msg, is_read: true } : msg
+        )
+      );
     } catch (err) {
       console.error("Error fetching audio:", err);
     }
@@ -103,7 +109,7 @@ const SentInbox: React.FC = () => {
                 })}
               </p>
               <p className="text-gray-600">
-                <strong>Status:</strong> {message.is_read ? "Read" : "Unread"}
+                <span className="italic">{message.is_read ? "Read" : ""}</span>
               </p>
               <div className="flex gap-4 mt-4">
                 <button
