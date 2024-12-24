@@ -13,16 +13,21 @@ const SectionUpload: React.FC = () => {
     setIsDownloaded(true);
   };
 
+  const handleStartUpload = () => {
+    setIsDownloaded(false);
+  };
+
   return (
     <section>
-      <div className="flex items-center justify-center h-80 flex-col md:flex-row">
+      <div className="flex items-center justify-center flex-col md:flex-row">
         <div className="w-full h-full px-4 my-4 bg-slate-400 rounded-l-lg">
           <div className="px-2 my-2 flex flex-col gap-2 items-center">
             <h2 className="hidden">Send</h2>
-            <h3>Send a file</h3>
+            <h3>Upload or record audio</h3>
             <Suspense fallback={<div>Loading...</div>}>
               <Upload
                 initialMessage="Upload a text file"
+                startUpload={handleStartUpload}
                 onUpload={handleUpload}
               />
             </Suspense>

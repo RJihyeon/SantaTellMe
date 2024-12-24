@@ -5,10 +5,15 @@ import React, { useRef, useState } from "react";
 
 interface UploadProps {
   initialMessage?: string;
+  startUpload: () => void;
   onUpload: (id: string) => void;
 }
 
-const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
+const Upload: React.FC<UploadProps> = ({
+  initialMessage,
+  startUpload,
+  onUpload,
+}) => {
   const [file, setFile] = useState<File | null>(null);
   const [recording, setRecording] = useState<boolean>(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -20,15 +25,17 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
 
   const [message, setMessage] = useState(initialMessage || "");
 
-  // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
-    if (selectedFile && (selectedFile.type === "audio/wav" || selectedFile.type === "audio/mpeg")) {
+    const validTypes = ["audio/wav", "audio/mpeg", "audio/webm"];  // Supported types
+  
+    if (selectedFile && validTypes.includes(selectedFile.type)) {
       setFile(selectedFile);
       setAudioUrl(URL.createObjectURL(selectedFile));
       setMessage("File ready to upload");
     } else {
-      setMessage("Please select a valid WAV or MP3 file.");
+      setMessage("Please select a valid WAV, MP3, or WEBM file.");
+      e.target.value = "";  // Reset file input if invalid
     }
   };
 
@@ -46,6 +53,8 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
     }
 
     try {
+      startUpload();
+
       const response = await fetch("/api/upload?token=" + token, {
         method: "POST",
         body: formData,
@@ -70,8 +79,10 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
 
   // Start Recording
   const startRecording = async () => {
+    setLoading(true);
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       alert("Your browser does not support audio recording.");
+      setLoading(false);
       return;
     }
 
@@ -93,6 +104,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
         setFile(new File([audioBlob], "recording.wav", { type: "audio/wav" }));
         audioChunks.current = [];
         setMessage("Recording ready for upload.");
+        setLoading(false);
       };
 
       mediaRecorder.start();
@@ -109,41 +121,47 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
     if (mediaRecorderRef.current && recording) {
       mediaRecorderRef.current.stop();
       setRecording(false);
+      setLoading(false);
       setMessage("Recording stopped.");
     }
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1 className="text-2xl font-semibold">Upload or Record Audio</h1>
-      
-      {/* File Upload */}
-      <div className="flex flex-row items-center gap-4">
+    <div className="flex flex-col items-center gap-4 min-h-48">
+      <div className="flex flex-row items-center gap-2">
         <input
           type="file"
           name="my-file"
-          accept=".wav, .mp3"
+          accept="audio/*"
           onChange={handleFileChange}
+          className="w-[35vw]"
         />
-      </div>
-
-      {/* Record Button */}
-      <div className="mt-4">
         {!recording ? (
           <button
             onClick={startRecording}
-            className="bg-green-500 px-4 py-2 text-white rounded"
+            className="bg-green-500 px-4 py-2 w-44 text-white rounded-full"
           >
             🎙️ Start Recording
           </button>
         ) : (
           <button
             onClick={stopRecording}
-            className="bg-red-500 px-4 py-2 text-white rounded"
+            className="bg-red-500 px-4 py-2 w-40 text-white rounded-full"
           >
             ⏹️ Stop Recording
           </button>
         )}
+        {/* Unified Upload Button */}
+        <button
+          onClick={handleUpload}
+          className={`bg-blue-500 px-6 py-2 text-white rounded-full ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Uploading..." : "Upload"}
+        </button>
+        {/* {message && <p>{message}</p>} */}
       </div>
 
       {/* Audio Playback */}
@@ -153,18 +171,7 @@ const Upload: React.FC<UploadProps> = ({ initialMessage, onUpload }) => {
         </audio>
       )}
 
-      {/* Unified Upload Button */}
-      <button
-        onClick={handleUpload}
-        className={`bg-blue-500 px-6 py-2 text-white rounded mt-6 ${
-          loading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-        disabled={loading}
-      >
-        {loading ? "Uploading..." : "Upload"}
-      </button>
-
-      {message && <p>{message}</p>}
+      {message}
     </div>
   );
 };
