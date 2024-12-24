@@ -79,7 +79,7 @@ async def authenticate(
 
         # 유저jwt 보다 디버깅이 우선...
         logger.info(f"user_kakao_id:[{user_kakao_id}] jwt_token:[{jwt_token}]")
-        response = RedirectResponse(url="http://43.202.2.151:3000")
+        response = RedirectResponse(url="https://www.santa-tell-me.com")
 
         # Step 5: Set the token in an HttpOnly cookie
         response.set_cookie(
