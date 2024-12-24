@@ -13,7 +13,7 @@ const UploadResult: React.FC<UploadResultProps> = ({ isDownloaded, audioId }) =>
 
   useEffect(() => {
     const fetchAudio = async () => {
-      if (audioId) {
+      if (audioId && isDownloaded) {
         console.log("Fetching audio file... id: " + audioId);
         setLoading(true);
         setError(null);
@@ -21,9 +21,6 @@ const UploadResult: React.FC<UploadResultProps> = ({ isDownloaded, audioId }) =>
         try {
           const response = await fetch(`/api/voice/${audioId}`, {
             method: "GET",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
           });
 
           if (!response.ok) {
@@ -53,7 +50,7 @@ const UploadResult: React.FC<UploadResultProps> = ({ isDownloaded, audioId }) =>
   }, [audioId]);  // Trigger fetch when audioId changes
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center min-h-48">
       <h3>{isDownloaded ? "Downloaded!" : "Awaiting upload..."}</h3>
       {loading && <p>Loading audio...</p>}
       {error && <p className="text-red-500">{error}</p>}

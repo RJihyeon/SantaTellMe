@@ -49,9 +49,6 @@ const Inbox: React.FC = () => {
     try {
       const response = await fetch(`/api/voice/${id}`, {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
       });
 
       if (!response.ok) {
@@ -108,7 +105,7 @@ const Inbox: React.FC = () => {
   }
 
   return (
-    <div className="w-[40vw] mx-auto p-4">
+    <div className="w-[50vw] mx-auto p-4">
       <h3 className="hidden text-2xl font-bold mb-6 text-center">
         Received Messages
       </h3>

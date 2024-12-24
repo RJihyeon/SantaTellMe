@@ -15,9 +15,6 @@ const SectionShareLink: React.FC = () => {
       try {
         const response = await fetch("/api/invite", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
         });
 
         if (response.ok) {
