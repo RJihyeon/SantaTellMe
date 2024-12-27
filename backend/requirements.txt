@@ -1,0 +1,11 @@
+pyjwt==2.8.0
+python-dotenv==1.0.1
+httpx
+fastapi[standard]==0.115.1
+uvicorn[standard]
+mysqlclient
+python-multipart
+boto3
+boto3-stubs[s3]
+pytest
+sqlalchemy
