@@ -98,10 +98,10 @@ const Upload: React.FC<UploadProps> = ({
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: "audio/wav" });
+        const audioBlob = new Blob(audioChunks.current, { type: "audio/webm" });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioUrl(audioUrl);
-        setFile(new File([audioBlob], "recording.wav", { type: "audio/wav" }));
+        setFile(new File([audioBlob], "recording.webm", { type: "audio/webm" }));
         audioChunks.current = [];
         setMessage("Recording ready for upload.");
         setLoading(false);

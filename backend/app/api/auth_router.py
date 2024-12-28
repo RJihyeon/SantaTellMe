@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 @router.get("/login")
-async def login() -> RedirectResponse:
+async def login() -> dict:
     """
     login main entry point
     책임
@@ -28,7 +28,25 @@ async def login() -> RedirectResponse:
         f"&response_type=code"
     )
     logger.info(f"kakao_auth_url: {kakao_auth_url}")
-    return RedirectResponse(url=kakao_auth_url)
+    return {"kakao_auth_url": kakao_auth_url}
+    # return RedirectResponse(url=kakao_auth_url)
+
+# @router.get("/login")
+# async def login() -> RedirectResponse:
+#     """
+#     login main entry point
+#     책임
+#         - kakao oauth server로 redirect
+#     """
+#     kakao_auth_url = (
+#         f"https://kauth.kakao.com/oauth/authorize"
+#         f"?client_id={Config.Kakako.ACCESS_KEY}"
+#         f"&redirect_uri={Config.Kakako.REDIRECT_URI}"
+#         f"&response_type=code"
+#     )
+#     logger.info(f"kakao_auth_url: {kakao_auth_url}")
+#     #return kakao_auth_url
+#     return RedirectResponse(url=kakao_auth_url)
 
 
 @router.get("/authenticate")
@@ -79,16 +97,17 @@ async def authenticate(
 
         # 유저jwt 보다 디버깅이 우선...
         logger.info(f"user_kakao_id:[{user_kakao_id}] jwt_token:[{jwt_token}]")
-        response = RedirectResponse(url="http://localhost:3000")
+        response = RedirectResponse(url="https://www.santa-tell-me.com")
 
         # Step 5: Set the token in an HttpOnly cookie
         response.set_cookie(
             key="access_token",
             value=jwt_token,
             httponly=True,
-            secure=False,  # Set to True in production with HTTPS
+            secure=True,  # Set to True in production with HTTPS
             samesite="Lax",
             max_age=3600,
+            domain=".santa-tell-me.com",
             path="/",
         )
         print("Response Headers:", response.headers)

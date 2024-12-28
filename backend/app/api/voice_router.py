@@ -47,7 +47,7 @@ async def upload_voice(
     logger.info("requesting for voice conversion")
     output_wav = rvc_infer_request(await audio_file.read())
 
-    upload_audio(f"{s3_id}.mp3", output_wav)
+    upload_audio(f"{s3_id}.wav", output_wav)
 
     # (tmp)
     return VoiceMetaData(
@@ -114,7 +114,7 @@ async def get_voice_audio(
     s3_id = str(UUID(bytes=voice.s3_id))
 
     # TODO: if audio file doesn't exist in bucket
-    audio_binary: bytes = download_audio(f"{s3_id}.mp3")
+    audio_binary: bytes = download_audio(f"{s3_id}.wav")
 
     return Response(content=audio_binary, media_type="audio/mpeg")
 
