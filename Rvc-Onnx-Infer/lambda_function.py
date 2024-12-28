@@ -26,7 +26,6 @@ def parse_event(event: dict) -> tuple:
 hubert_path: Path = Path.cwd() / 'assets' / 'vec-768-layer-9.onnx'
 g_net_path: Path = Path.cwd() / 'assets' / 'my-model.onnx'
 
-# TODO: assert 가 최선인가? NUMBA_CACHE_DIR 가 none이면 종료
 assert hubert_path.exists()
 assert g_net_path.exists()
 

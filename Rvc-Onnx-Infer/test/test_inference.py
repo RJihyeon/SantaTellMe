@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 conf = infer.RvcConfig(vec_path=Path.cwd().parent / 'assets' / 'vec-768-layer-9.quant.onnx',
-                       model_path=Path.cwd().parent / 'assets' / 'my-model.onnx',
+                       model_path=Path.cwd().parent / 'assets' / 'YOUR_ONNX_MODEL',
                        device="cpu",
                        sampling_rate=48000,
                        hop_size=128,
@@ -19,7 +19,7 @@ conf = infer.RvcConfig(vec_path=Path.cwd().parent / 'assets' / 'vec-768-layer-9.
                        log_level=1
                        )
 
-input_wav = open(Path.cwd().parent / 'sample-data' / 'Conference.wav', mode='rb').read()
+input_wav = open(Path.cwd().parent / 'sample-data' / 'YOUR_SAMPLE_WAV_FILE', mode='rb').read()
 
 output_wav = infer.convert_voice(input_wav, conf)
 

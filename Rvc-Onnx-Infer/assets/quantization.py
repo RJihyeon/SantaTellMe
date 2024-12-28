@@ -8,7 +8,7 @@ quantized_model = quantize_dynamic(
     model_quant,
     weight_type=QuantType.QUInt8,
 )
-model_fp32 = 'my-model.onnx'
+model_fp32 = 'YOUR_ONNX_MODEL'
 model_quant = 'my-model.quant.onnx'
 quantized_model = quantize_dynamic(
     model_fp32,
