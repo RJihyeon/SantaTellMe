@@ -6,13 +6,16 @@ from timeit import default_timer as timer
 import filetype
 import httpx
 from fastapi import HTTPException
+import pydub
+import io
 
 logger = logging.getLogger(__name__)
 
 
 def check_extension(input: bytes) -> (bool, str):
     extension = filetype.guess_extension(input)
-    if extension in ["wav", "mp3"]:
+    logger.info(f"input extension: [{extension}]")
+    if extension in ["wav", "mp3", "webm"]:
         return True, extension
     else:
         return False, extension
@@ -26,6 +29,15 @@ def rvc_infer_request(input_wav: bytes) -> bytes:
     """
 
     if_supported, extension = check_extension(input_wav)
+
+    if extension == "webm":
+        logger.info("converting webm to wav")
+        audio = pydub.AudioSegment.from_file(io.BytesIO(input_wav), format="webm")
+
+        audio_wav = io.BytesIO()
+        audio.export(audio_wav,  format="wav")
+        input_wav = audio_wav.getvalue()
+
     if not if_supported:
         error_msg = f"extension [{extension}] is not supported"
         logger.error(error_msg)
