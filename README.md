@@ -173,5 +173,5 @@ santatellme/
 |**[김예찬](https://github.com/yechance7)**|DE|backend|
 |**[방준형](https://github.com/bindingflare)**|DE|frontend|
 |**[박준형](https://github.com/jsybf)**|DE|backend/모델 추론 및 배포|
-|**[이승준](https://github.com/)**|DE|(역할)|
-|**[한예지](https://github.com/)**|DA|(역할)|
+|**[이승준](https://github.com/)**|DS|modeling|
+|**[한예지](https://github.com/)**|DA|modeling|
