@@ -3,7 +3,7 @@ Create a warm year-end with SantaTellMe. Express your heart with voice and words
 
 ## 목차
 - [Intro](#Intro)
-- [DEMO](#DEMO)
+- [Demo](#DEMO)
 - [requirments](#requirments)
 - [구동방법](#docker로-service-구동시켜보기)
 - [아키텍처](#아키텍처)
@@ -12,9 +12,9 @@ Create a warm year-end with SantaTellMe. Express your heart with voice and words
 
 ## Intro 
 따뜻한 연말을 위한 크리스마스 게릴라 서비스! 기존 트리꾸미기를 발전시켜, 익명의 산타 목소리로 마음을 전하고 맞혀보는 우편함.
-- 배포사이트 : 
+- 배포사이트: https://www.santa-tell-me.com/
 
-## DEMO 
+## Demo 
 ### [시연 영상으로 이동](https://drive.google.com/file/d/1PZPSdt0HfawlyNDrGGrqZukAlbh1p5Wj/view?usp=sharing)
 <img width="1467" alt="스크린샷 2025-01-07 오전 8 34 47" src="https://github.com/user-attachments/assets/42de8357-f28c-4f6f-90d5-f30d189d88a4" />
 <img width="1470" alt="스크린샷 2025-01-07 오전 8 35 41" src="https://github.com/user-attachments/assets/e3956074-76ab-4dcc-a9c2-aa0448000946" />
