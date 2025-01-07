@@ -63,7 +63,7 @@ mysql -h 127.0.0.1 --port 3306 --user=test_user --password=pass test_db
 - `3 passed, 1 warning in 0.87s` 중간에 이렇게 뜨면 성공
 
 ## 아키텍처
-
+<img width="1010" alt="스크린샷 2025-01-07 오전 9 22 45" src="https://github.com/user-attachments/assets/bf4f9871-c7b0-44d7-b902-9ad4dec522d7" />
 
 ## 📁 프로젝트 폴더 구조
 
