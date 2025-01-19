@@ -4,24 +4,24 @@ Create a warm year-end with SantaTellMe. Express your heart with voice and words
 ## 목차
 - [Intro](#Intro)
 - [Demo](#DEMO)
-- [requirments](#requirments)
-- [구동방법](#docker로-service-구동시켜보기)
-- [아키텍처](#아키텍처)
-- [프로젝트_폴더구조](#-📁-프로젝트-폴더-구조)
-- [팀_구성](#Team-Member-Info)
+- [Requirments](#Requirements)
+- [How to Run](#Running-the-Service-with-Docker)
+- [Architecture](#Architecture)
+- [Project Folder Structure](#-📁-Project-Folder-Structure)
+- [Team Members](#Team-Member-Info)
 
 ## Intro 
 따뜻한 연말을 위한 크리스마스 게릴라 서비스! 기존 트리꾸미기를 발전시켜, 익명의 산타 목소리로 마음을 전하고 맞혀보는 우편함.
 - 배포사이트: https://www.santa-tell-me.com/
 
 ## Demo 
-### [시연 영상으로 이동](https://drive.google.com/file/d/1PZPSdt0HfawlyNDrGGrqZukAlbh1p5Wj/view?usp=sharing)
+### [Link to demo video](https://drive.google.com/file/d/1PZPSdt0HfawlyNDrGGrqZukAlbh1p5Wj/view?usp=sharing)
 <img width="1467" alt="스크린샷 2025-01-07 오전 8 34 47" src="https://github.com/user-attachments/assets/42de8357-f28c-4f6f-90d5-f30d189d88a4" />
 <img width="1470" alt="스크린샷 2025-01-07 오전 8 35 41" src="https://github.com/user-attachments/assets/e3956074-76ab-4dcc-a9c2-aa0448000946" />
 <img width="1470" alt="스크린샷 2025-01-07 오전 8 53 28" src="https://github.com/user-attachments/assets/39a28dcd-e32d-44e9-8169-56ed746611e5" />
 
-## recipes
-#### requirments
+## Recipes
+#### Requirements
 - docker, docker compose
 - pipenv 
 - python 3.10
@@ -30,7 +30,7 @@ Create a warm year-end with SantaTellMe. Express your heart with voice and words
 #### 참고
 - santa-db(mysql container) 띄울시 ./SantaTellMe/backend/data 에 위치한 .sql 파일들 실행됨. table 생성 및 테스트 데이터 추가.
 
-## docker로 service 구동시켜보기
+## Running the Service with Docker
 ```
 # 실행 위치: ./SantaTellMe
 # 커맨드: docker-compose up -d <serivce_name or omit> --build
@@ -62,10 +62,10 @@ mysql -h 127.0.0.1 --port 3306 --user=test_user --password=pass test_db
 ```
 - `3 passed, 1 warning in 0.87s` 중간에 이렇게 뜨면 성공
 
-## 아키텍처
+## Architecture
 <img width="1010" alt="스크린샷 2025-01-07 오전 9 22 45" src="https://github.com/user-attachments/assets/bf4f9871-c7b0-44d7-b902-9ad4dec522d7" />
 
-## 📁 프로젝트 폴더 구조
+## 📁 Project Folder Structure
 
 ```plaintext
 santatellme/
