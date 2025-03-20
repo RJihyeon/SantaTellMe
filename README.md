@@ -183,7 +183,7 @@ santatellme/
 |**[류지현](https://github.com/RJihyeon)**|DE|팀장/backend/frontend|
 |**[김소윤](https://github.com/)**|DS|modeling|
 |**[김예찬](https://github.com/yechance7)**|DE|backend|
-|**[방준형](https://github.com/bindingflare)**|DE|frontend|
+|**[방준현](https://github.com/bindingflare)**|DE|frontend|
 |**[박준형](https://github.com/jsybf)**|DE|backend/모델 추론 및 배포|
 |**[이승준](https://github.com/)**|DS|modeling|
 |**[한예지](https://github.com/)**|DA|modeling|
